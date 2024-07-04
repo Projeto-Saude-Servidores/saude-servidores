@@ -1,3 +1,13 @@
+import Banner from "@/components/Banner";
+
+
 export default function Page() {
-  return <p>Dashboard Page</p>;
+  return(
+    <main>
+      <div className="w-full items-center justify-between">
+        <Banner />
+      </div>
+    </main>
+    
+  );
 }
