@@ -1,5 +1,6 @@
 import Banner from "@/components/Banner";
 import NavBar from "@/components/NavBar";
+import Sample from "@/components/Sample";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
           {/* Quadrado 1 */}
           <div className="bg-white rounded-lg h-full w-4/5 shadow-md">Informações/filtros</div>
         </div>
+        <Sample></Sample>
       </div>
     </main>
     </NavBar>
