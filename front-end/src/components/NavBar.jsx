@@ -27,7 +27,7 @@ export default function NavBar({ children }) {
   };
 
   return (
-    <div className="relative flex flex-col h-full w-full">
+    <div className="relative flex flex-col min-h-screen w-full">
       <Banner onclick={handleDrawerToggle} />
       <header
         className={` text-black flex justify-between items-center items-center flex ${

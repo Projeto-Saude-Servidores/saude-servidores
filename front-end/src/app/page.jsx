@@ -1,4 +1,4 @@
-import Banner from "@/components/Banner";
+import GraficoColunas from "@/components/GraficoColunas";
 import NavBar from "@/components/NavBar";
 import Sample from "@/components/Sample";
 
@@ -13,7 +13,10 @@ export default function Home() {
       <div className="flex flex-row flex-grow p-5 w-full justify-center items-center">
         <div className="flex flex-col gap-5 w-1/2 justify-center items-center h-full">
           {/* Quadrado 1 */}
-          <div className="bg-white rounded-lg h-1/2 w-4/5 shadow-md">Gráfico 1</div>
+          <div className="bg-white rounded-lg h-1/2 w-4/5 justify-center pt-3 shadow-md">
+          <h1 className="text-center font-bold">Nível de dores por departamento</h1>
+          <GraficoColunas/>
+          </div>
 
           {/* Quadrado 2 */}
           <div className="bg-white rounded-lg h-1/2 w-4/5 shadow-md">Gráfico 2</div>
