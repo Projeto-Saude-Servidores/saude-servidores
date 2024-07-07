@@ -9,7 +9,7 @@ export default function Sample() {
     });
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:5000/api/data')
+        axios.get('http://127.0.0.1:5000/api/setores')
             .then(response => {
                 const responseData = response.data;
                 console.log(responseData);

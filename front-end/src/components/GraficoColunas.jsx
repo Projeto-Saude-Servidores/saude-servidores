@@ -1,4 +1,3 @@
-"use client";
 import React from 'react';
 import ReactApexChart from 'react-apexcharts';
 
@@ -6,18 +5,10 @@ class GraficoColunas extends React.Component {
   constructor(props) {
     super(props);
 
-    const data = [1.3, 2, 1.6, 4.4, 4, 0.9, 4.8, 3.5, 3.2, 0.5];
-    
-    const colors = data.map(value => {
-      if (value < 1.5) return '#00FF00'; // verde
-      if (value > 4) return '#FF0000'; // vermelho
-      return '#FFFF00'; // amarelo
-    });
-
     this.state = {
       series: [{
         name: 'Nível de dor média',
-        data: data
+        data: []  // Inicialmente vazio, vamos atualizar com props
       }],
       options: {
         chart: {
@@ -32,11 +23,17 @@ class GraficoColunas extends React.Component {
             horizontal: false,
             columnWidth: '55%',
             endingShape: 'rounded',
-            distributed: true, // Configura as barras para usar cores distribuídas
+            distributed: true,
+            events: {
+              dataPointSelection: (event, chartContext, config) => {
+                const departmentName = this.state.options.xaxis.categories[config.dataPointIndex];
+                console.log('Departamento clicado:', departmentName);
+              }
+            }
           },
         },
         dataLabels: {
-          enabled: false // Desativa legendas de dados individuais
+          enabled: false
         },
         stroke: {
           show: true,
@@ -46,13 +43,13 @@ class GraficoColunas extends React.Component {
         xaxis: {
           categories: ['GAB', 'TI', 'ADM', 'BB', 'RH', 'DE', 'DP', 'DC', 'IN', 'FIN'],
           title: {
-            text: 'Departamentos', // Adiciona o título ao eixo X
+            text: 'Departamentos',
             style: {
               fontSize: '14px',
               fontWeight: 'bold',
               color: '#263238'
             },
-            offsetY: -10, // Ajusta a posição vertical do título
+            offsetY: -10,
           }
         },
         yaxis: {
@@ -62,7 +59,7 @@ class GraficoColunas extends React.Component {
         },
         fill: {
           opacity: 1,
-          colors: colors // Aplica as cores às colunas
+          colors: []  // Será atualizado com base nos dados recebidos
         },
         tooltip: {
           y: {
@@ -72,10 +69,35 @@ class GraficoColunas extends React.Component {
           }
         },
         legend: {
-          show: false // Desativa a legenda padrão
+          show: false
         }
       },
     };
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.data !== prevState.series[0].data) {
+      const colors = nextProps.data.map(value => {
+        if (value < 1) return '#00FF00'; // verde
+        if (value > 2.5) return '#FF0000'; // vermelho
+        return '#FFFF00'; // amarelo
+      });
+
+      return {
+        series: [{
+          ...prevState.series[0],
+          data: nextProps.data
+        }],
+        options: {
+          ...prevState.options,
+          fill: {
+            ...prevState.options.fill,
+            colors: colors
+          }
+        }
+      };
+    }
+    return null;
   }
 
   render() {
