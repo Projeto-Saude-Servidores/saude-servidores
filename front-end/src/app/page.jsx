@@ -29,7 +29,9 @@ export default function Home() {
             <div className="bg-white rounded-lg h-1/2 w-full shadow-md">Gráfico 2</div>
           </div>
           <div className="flex flex-col h-full w-1/2 justify-center items-center">
-            <div className="bg-white rounded-lg h-full w-full shadow-md">Informações/filtros</div>
+            <div className="bg-white rounded-lg h-full w-full pt-3 shadow-md">
+              <h1 className="text-center font-bold mb-0">Dados da amostra</h1>
+            </div>
           </div>
         </div>
       </main>

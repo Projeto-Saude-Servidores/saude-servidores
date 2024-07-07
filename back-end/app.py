@@ -24,6 +24,22 @@ department_abbreviations = {
     "Gabinete do (a) Reitor(a), eu": "GAB"
 }
 
+
+@app.route('/api/data', methods=['GET'])
+def get_csv_data():
+    response_counts = {}
+    
+    for column in df.columns:
+        counts = df[column].value_counts().to_dict()
+        response_counts[column] = counts
+        
+        
+    # Usar json.dumps para garantir que os caracteres não sejam escapados
+    response_json = json.dumps(response_counts, ensure_ascii=False)
+    
+    # Retornar a resposta JSON com o mime type application/json
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
 # Rota para definir o nível de dor média de cada setor
 @app.route('/api/setores', methods=['GET'])
 def get_average_pain_by_sector():
@@ -58,6 +74,82 @@ def get_average_pain_by_sector():
     
     # Retornar a resposta JSON com o mime type application/json
     return Response(response_json, content_type="application/json; charset=utf-8")
+
+
+@app.route('/api/amostragem', methods=['GET'])
+def get_csv_amostragem():
+    response_counts = {}
+    
+    # quantidade de pessoas
+    response_counts["Pessoas"] = len(df)
+    
+    # calculando quantas pessoas de cada sexo tem
+    counts = df["2. Sexo:"].value_counts().to_dict()
+    response_counts["Gêneros"] = counts
+    
+    
+    idades = df["1. Idade:"].dropna()
+     # Definindo faixas de altura
+    faixas_idade = {
+        "até 29": 0,
+        "entre 30 e 39": 0,
+        "entre 40 e 49": 0,
+        "50 ou mais": 0
+    }
+    
+    for idade in idades:
+        if idade <= 29:
+            faixas_idade["até 29"] += 1
+        elif 30 <= idade <= 39:
+            faixas_idade["entre 30 e 39"] += 1
+        elif 40<= idade <=49:
+            faixas_idade["entre 40 e 49"] += 1
+        else:
+            faixas_idade["50 ou mais"] += 1
+            
+    response_counts["Idades"] = faixas_idade
+    
+    
+    # Calculando frequência de alturas por faixa
+    alturas = df["4. Qual a sua altura? Ex: 1,70m"].dropna()  # Remove valores NaN se houver(talvez não precise)
+    
+    # Definindo faixas de altura
+    faixas_altura = {
+        "menor que 165": 0,
+        "entre 165 e 172": 0,
+        "entre 173 e 179": 0,
+        "maior que 179": 0
+    }
+    
+    # Contagem de alturas por faixa
+    for altura in alturas:
+        if altura < 165:
+            faixas_altura["menor que 165"] += 1
+        elif 165 <= altura <= 172:
+            faixas_altura["entre 165 e 172"] += 1
+        elif 173<= altura <=179:
+            faixas_altura["entre 173 e 179"] += 1
+        else:
+            faixas_altura["maior que 179"] += 1
+    
+    response_counts["Alturas"] = faixas_altura
+        
+    # calculando quantas pessoas de cada setor tem
+    counts = df["7. Setor da Reitoria:"].value_counts().to_dict()
+    response_counts["Setores"] = counts
+    
+    # calculando quantas pessoas por cada regime de trabalho
+    counts = df["6. Qual o seu regime de trabalho?"].value_counts().to_dict()
+    response_counts["Regimes de trabalho"] = counts
+    
+    
+        
+    # Usar json.dumps para garantir que os caracteres não sejam escapados
+    response_json = json.dumps(response_counts, ensure_ascii=False)
+    
+    # Retornar a resposta JSON com o mime type application/json
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
