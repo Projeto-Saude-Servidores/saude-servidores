@@ -6,30 +6,28 @@ import json
 app = Flask(__name__)
 CORS(app)
 
-# Load the data from the Excel file
+
+# Load the data from the CSV file
 df = pd.read_csv('./Projeto Saúde do Servidor -  Riscos Ergonômicos e Sintomas Osteomusculares - Projeto Saúde do Servidor -  Riscos Ergonômicos e Sintomas Osteomusculares (respostas).csv')
 
-@app.route('/api/data', methods=['GET'])
-def get_csv_data():
-    response_counts = {}
-    
-    for column in df.columns:
-        counts = df[column].value_counts().to_dict()
-        response_counts[column] = counts
-        
-        
-    # Usar json.dumps para garantir que os caracteres não sejam escapados
-    response_json = json.dumps(response_counts, ensure_ascii=False)
-    
-    # Retornar a resposta JSON com o mime type application/json
-    return Response(response_json, content_type="application/json; charset=utf-8")
-    
-
+# Mapeamento de abreviações de setores(para facilitar na criação dos gráficos no front)
+department_abbreviations = {
+    "Administração Geral": "ADM",
+    "Biblioteca Central": "BIB",
+    "Departamento de Comunicação": "COM",
+    "Departamento de Ensino": "ENS",
+    "Departamento de Finanças": "FIN",
+    "Departamento de Infraestrutura": "INF",
+    "Departamento de Pesquisa": "PES",
+    "Departamento de Recursos Humanos": "RH",
+    "Departamento de Tecnologia": "TEC",
+    "Gabinete do (a) Reitor(a), eu": "GAB"
+}
 
 # Rota para definir o nível de dor média de cada setor
 @app.route('/api/setores', methods=['GET'])
 def get_average_pain_by_sector():
-    # Define the columns related to pain levels
+    # Define as colunas relacionadas aos níveis de dor(acho mais adequado mudar as colunas no arquivo csv para diminuir esse código)
     pain_columns = [
         "29. Nos últimos 12 meses, você sentiu alguma dor ou desconforto ? Indique a intensidade da dor (0 = nenhuma 5 = dor extrema) [Pescoço]",
         "29. Nos últimos 12 meses, você sentiu alguma dor ou desconforto ? Indique a intensidade da dor (0 = nenhuma 5 = dor extrema) [Ombro Direito]",
@@ -50,11 +48,13 @@ def get_average_pain_by_sector():
     # Calcular o nível médio de dor para cada pessoa
     df['Average Pain Level'] = df[pain_columns].mean(axis=1)
     
-    # Calcular o nível médio de dor por setor
-    sector_average_pain = df.groupby('7. Setor da Reitoria:')['Average Pain Level'].mean().to_dict()
+    # Calcular o nível médio de dor por setor e aplicar as abreviações definidas manualmente
+    sector_average_pain = df.groupby('7. Setor da Reitoria:')['Average Pain Level'].mean().reset_index()
+    sector_average_pain['7. Setor da Reitoria:'] = sector_average_pain['7. Setor da Reitoria:'].map(department_abbreviations)
+    sector_average_pain_dict = sector_average_pain.set_index('7. Setor da Reitoria:')['Average Pain Level'].to_dict()
     
     # Usar json.dumps para garantir que os caracteres não sejam escapados
-    response_json = json.dumps(sector_average_pain, ensure_ascii=False)
+    response_json = json.dumps(sector_average_pain_dict, ensure_ascii=False)
     
     # Retornar a resposta JSON com o mime type application/json
     return Response(response_json, content_type="application/json; charset=utf-8")

@@ -1,112 +1,73 @@
 import React from 'react';
-import ReactApexChart from 'react-apexcharts';
+import { Chart } from 'react-google-charts';
+import CircularProgress from '@mui/material/CircularProgress';
 
 class GraficoColunas extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      series: [{
-        name: 'Nível de dor média',
-        data: []  // Inicialmente vazio, vamos atualizar com props
-      }],
-      options: {
-        chart: {
-          toolbar: {
-            show: false,
-          },
-          type: 'bar',
-          height: 350
-        },
-        plotOptions: {
-          bar: {
-            horizontal: false,
-            columnWidth: '55%',
-            endingShape: 'rounded',
-            distributed: true,
-            events: {
-              dataPointSelection: (event, chartContext, config) => {
-                const departmentName = this.state.options.xaxis.categories[config.dataPointIndex];
-                console.log('Departamento clicado:', departmentName);
-              }
-            }
-          },
-        },
-        dataLabels: {
-          enabled: false
-        },
-        stroke: {
-          show: true,
-          width: 2,
-          colors: ['transparent']
-        },
-        xaxis: {
-          categories: ['GAB', 'TI', 'ADM', 'BB', 'RH', 'DE', 'DP', 'DC', 'IN', 'FIN'],
-          title: {
-            text: 'Departamentos',
-            style: {
-              fontSize: '14px',
-              fontWeight: 'bold',
-              color: '#263238'
-            },
-            offsetY: -10,
-          }
-        },
-        yaxis: {
-          title: {
-            text: 'Nível das dores'
-          }
-        },
-        fill: {
-          opacity: 1,
-          colors: []  // Será atualizado com base nos dados recebidos
-        },
-        tooltip: {
-          y: {
-            formatter: function (val) {
-              return val;
-            }
-          }
-        },
-        legend: {
-          show: false
-        }
-      },
+      loading: true
     };
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.data !== prevState.series[0].data) {
-      const colors = nextProps.data.map(value => {
-        if (value < 1) return '#00FF00'; // verde
-        if (value > 2.5) return '#FF0000'; // vermelho
-        return '#FFFF00'; // amarelo
-      });
-
-      return {
-        series: [{
-          ...prevState.series[0],
-          data: nextProps.data
-        }],
-        options: {
-          ...prevState.options,
-          fill: {
-            ...prevState.options.fill,
-            colors: colors
-          }
-        }
-      };
-    }
-    return null;
+  componentDidMount() {
+    // carregamento
+    setTimeout(() => {
+      this.setState({ loading: false });
+    }); 
   }
 
   render() {
+    const { responseData } = this.props;
+
+    // Convertendo o objeto responseData em um array de arrays para o react-google-charts
+    const chartData = Object.entries(responseData).map(([departamento, nivel]) => {
+      return [departamento, parseFloat(nivel.toFixed(2)), nivel < 1 ? '#00FF00' : (nivel > 2.5 ? '#FF0000' : '#FFFF00')];
+    });
+
+    // Adicionando o cabeçalho do gráfico
+    const chartHeader = [['Departamentos', 'Nível de dor médio', { role: 'style' }]];
+    const finalData = chartHeader.concat(chartData);
+
     return (
-      <div>
-        <div id="chart">
-          <ReactApexChart options={this.state.options} series={this.state.series} type="bar" height={300} />
-        </div>
-        <div id="html-dist"></div>
+      <div style={{ position: 'relative', width: '100%', height: '90%' }}>
+        {this.state.loading && (
+          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+            <CircularProgress />
+          </div>
+        )}
+        <Chart
+          width={'100%'}
+          height={'100%'}
+          chartType="ColumnChart"
+          data={finalData}
+          options={{
+            hAxis: {
+              title: 'Departamentos',
+              titleTextStyle: { color: '#263238', fontSize: '14px', bold: true },
+            },
+            vAxis: {
+              title: 'Nível de dores',
+              titleTextStyle: { color: '#263238', fontSize: '14px', bold: true },
+            },
+            legend: { position: 'none' },
+            animation: {
+              startup: true,
+              easing: "out",
+              duration: 1200,
+            },
+            chartArea: {
+              top: 20, 
+              width: '90%', 
+              height: '80%' 
+            },
+            tooltip: { isHtml: true, ignoreBounds: true, textStyle: { fontSize: 12 }, cssClassNames: {
+              tooltip: 'rounded-md p-2 shadow-md bg-white',
+              },
+            },
+            
+          }}
+        />
       </div>
     );
   }
