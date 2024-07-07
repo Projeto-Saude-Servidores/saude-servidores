@@ -58,7 +58,11 @@ export default function NavBar({ children }) {
         </ul>
         <hr className="my-4 border-gray-700" />
       </div>
-      <main className={`flex-grow border-2 px-0 ${open ? "ml-64" : " px-0"}`}>
+      <main
+        className={`flex-grow h-max w-full border-2 px-0  bg-gray-300 ${
+          open ? "ml-64  bg-gray-300" : "  bg-gray-300 h-max w-full px-0"
+        }`}
+      >
         {children}
       </main>
     </div>
