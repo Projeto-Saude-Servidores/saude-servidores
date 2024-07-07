@@ -30,7 +30,8 @@ class GraficoColunas extends React.Component {
     const finalData = chartHeader.concat(chartData);
 
     return (
-      <div style={{ position: 'relative', width: '100%', height: '90%' }}>
+      <div className="border-2 rounded-lg px-2">
+        <div style={{ position: 'relative', width: '100%', height: '90%' }}>
         {this.state.loading && (
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
             <CircularProgress />
@@ -49,9 +50,6 @@ class GraficoColunas extends React.Component {
             vAxis: {
               title: 'Nível de dores',
               titleTextStyle: { color: '#263238', fontSize: '14px', bold: true },
-              viewWindow: {
-                max: 5,
-              },
             },
             legend: { position: 'none' },
             animation: {
@@ -71,6 +69,7 @@ class GraficoColunas extends React.Component {
             
           }}
         />
+      </div>
       </div>
     );
   }

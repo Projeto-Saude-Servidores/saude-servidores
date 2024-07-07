@@ -47,42 +47,45 @@ const SectorPainChart = ({ sector }) => {
 
   return (
     <div style={{ position: "relative", width: "100%", height: "80%" }}>
-      <Chart
-        width={"100%"}
-        height={"100%"}
-        chartType="ColumnChart"
-        data={finalData}
-        options={{
-          title: `${sector}`,
-          hAxis: {
-            title: "Tipos de dores",
-            titleTextStyle: { color: "#263238", fontSize: "14px", bold: true },
-          },
-          vAxis: {
-            title: "Nível de dor",
-            titleTextStyle: { color: "#263238", fontSize: "14px", bold: true },
-          },
-          legend: { position: "none" },
-          animation: {
-            startup: true,
-            easing: "out",
-            duration: 1200,
-          },
-          chartArea: {
-            top: 20,
-            width: "90%",
-            height: "70%",
-          },
-          tooltip: {
-            isHtml: true,
-            ignoreBounds: true,
-            textStyle: { fontSize: 12 },
-            cssClassNames: {
-              tooltip: "rounded-md p-2 shadow-md bg-white",
+      <div className="border-2 rounded-lg p-2">
+
+        <Chart
+          width={"100%"}
+          height={"100%"}
+          chartType="ColumnChart"
+          data={finalData}
+          options={{
+            title: `${sector}`,
+            hAxis: {
+              title: "Tipos de dores",
+              titleTextStyle: { color: "#263238", fontSize: "14px", bold: true },
             },
-          },
-        }}
-      />
+            vAxis: {
+              title: "Nível de dor",
+              titleTextStyle: { color: "#263238", fontSize: "14px", bold: true },
+            },
+            legend: { position: "none" },
+            animation: {
+              startup: true,
+              easing: "out",
+              duration: 1200,
+            },
+            chartArea: {
+              top: 20,
+              width: "90%",
+              height: "70%",
+            },
+            tooltip: {
+              isHtml: true,
+              ignoreBounds: true,
+              textStyle: { fontSize: 12 },
+              cssClassNames: {
+                tooltip: "rounded-md p-2 shadow-md bg-white",
+              },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 };
