@@ -49,6 +49,9 @@ class GraficoColunas extends React.Component {
             vAxis: {
               title: 'Nível de dores',
               titleTextStyle: { color: '#263238', fontSize: '14px', bold: true },
+              viewWindow: {
+                max: 5,
+              },
             },
             legend: { position: 'none' },
             animation: {

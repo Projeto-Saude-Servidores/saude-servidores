@@ -89,25 +89,46 @@ def get_csv_amostragem():
     
     
     idades = df["1. Idade:"].dropna()
-     # Definindo faixas de altura
+    
     faixas_idade = {
-        "até 29": 0,
-        "entre 30 e 39": 0,
-        "entre 40 e 49": 0,
-        "50 ou mais": 0
+        "até 29 anos": 0,
+        "entre 30 e 39 anos": 0,
+        "entre 40 e 49 anos": 0,
+        "50 anos ou mais": 0
     }
     
     for idade in idades:
         if idade <= 29:
-            faixas_idade["até 29"] += 1
+            faixas_idade["até 29 anos"] += 1
         elif 30 <= idade <= 39:
-            faixas_idade["entre 30 e 39"] += 1
-        elif 40<= idade <=49:
-            faixas_idade["entre 40 e 49"] += 1
+            faixas_idade["entre 30 e 39 anos"] += 1
+        elif 40 <= idade <= 49:
+            faixas_idade["entre 40 e 49 anos"] += 1
         else:
-            faixas_idade["50 ou mais"] += 1
+            faixas_idade["50 anos ou mais"] += 1
             
     response_counts["Idades"] = faixas_idade
+    
+    pesos = df["5. Qual o seu peso? Ex: 68 kg"].dropna()
+    
+    faixas_peso = {
+        "até 60 kg": 0,
+        "entre 61 e 75 kg": 0,
+        "entre 76 e 85 kg": 0,
+        "acima de 85 kg": 0
+    }
+    
+    for peso in pesos:
+        if peso <= 60:
+            faixas_peso["até 60 kg"] += 1
+        elif 61 <= peso <= 75:
+            faixas_peso["entre 61 e 75 kg"] += 1
+        elif 76 <= peso <= 85:
+            faixas_peso["entre 76 e 85 kg"] += 1
+        else:
+            faixas_peso["acima de 85 kg"] += 1
+            
+    response_counts["Pesos"] = faixas_peso
     
     
     # Calculando frequência de alturas por faixa
@@ -115,22 +136,22 @@ def get_csv_amostragem():
     
     # Definindo faixas de altura
     faixas_altura = {
-        "menor que 165": 0,
-        "entre 165 e 172": 0,
-        "entre 173 e 179": 0,
-        "maior que 179": 0
+        "menor que 165 cm": 0,
+        "entre 165 e 172 cm": 0,
+        "entre 173 e 179 cm": 0,
+        "maior que 179 cm": 0
     }
     
     # Contagem de alturas por faixa
     for altura in alturas:
         if altura < 165:
-            faixas_altura["menor que 165"] += 1
+            faixas_altura["menor que 165 cm"] += 1
         elif 165 <= altura <= 172:
-            faixas_altura["entre 165 e 172"] += 1
-        elif 173<= altura <=179:
-            faixas_altura["entre 173 e 179"] += 1
+            faixas_altura["entre 165 e 172 cm"] += 1
+        elif 173 <= altura <= 179:
+            faixas_altura["entre 173 e 179 cm"] += 1
         else:
-            faixas_altura["maior que 179"] += 1
+            faixas_altura["maior que 179 cm"] += 1
     
     response_counts["Alturas"] = faixas_altura
         
