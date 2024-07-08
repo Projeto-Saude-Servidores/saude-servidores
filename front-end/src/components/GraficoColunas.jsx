@@ -1,78 +1,72 @@
-import React from 'react';
-import { Chart } from 'react-google-charts';
-import CircularProgress from '@mui/material/CircularProgress';
+import * as React from 'react';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import Stack from '@mui/material/Stack';
+import PropTypes from 'prop-types';
 
-class GraficoColunas extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true
-    };
-  }
+function GraficoColunas({ data }) {
+  console.log('Dataset:', data); // Verifica os dados recebidos antes do processamento
 
-  componentDidMount() {
-    // carregamento
-    setTimeout(() => {
-      this.setState({ loading: false });
-    }); 
-  }
 
-  render() {
-    const { responseData } = this.props;
+  // ainda sem funcionar as cores
+  const getColor = (value) => {
+    if (value < 1) {
+      return '#76B7B2';
+    } else if (value >= 1 && value < 2) {
+      return '#EDC949';
+    } else {
+      return '#E15759';
+    }
+  };
 
-    // Convertendo o objeto responseData em um array de arrays para o react-google-charts
-    const chartData = Object.entries(responseData).map(([departamento, nivel]) => {
-      return [departamento, parseFloat(nivel.toFixed(2)), nivel < 1 ? '#00FF00' : (nivel > 2.5 ? '#FF0000' : '#FFFF00')];
-    });
+  const dataset = React.useMemo(() => {
+    return Object.entries(data).map(([key, value]) => ({
+      order: key,
+      high: value,
+      color: getColor(value), // Adiciona a cor com base nos critérios definidos
+    }));
+  }, [data]);
 
-    // Adicionando o cabeçalho do gráfico
-    const chartHeader = [['Departamentos', 'Nível de dor médio', { role: 'style' }]];
-    const finalData = chartHeader.concat(chartData);
+  console.log('Dataset com cores:', dataset); // Verifica o dataset com as cores atribuídas
 
-    return (
-      <div className="border-2 rounded-lg px-2">
-        <div style={{ position: 'relative', width: '100%', height: '90%' }}>
-        {this.state.loading && (
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-            <CircularProgress />
-          </div>
-        )}
-        <Chart
-          width={'100%'}
-          height={'100%'}
-          chartType="ColumnChart"
-          data={finalData}
-          options={{
-            hAxis: {
-              title: 'Departamentos',
-              titleTextStyle: { color: '#263238', fontSize: '14px', bold: true },
-            },
-            vAxis: {
-              title: 'Nível de dores',
-              titleTextStyle: { color: '#263238', fontSize: '14px', bold: true },
-            },
-            legend: { position: 'none' },
-            animation: {
-              startup: true,
-              easing: "out",
-              duration: 1200,
-            },
-            chartArea: {
-              top: 20, 
-              width: '90%', 
-              height: '80%' 
-            },
-            tooltip: { isHtml: true, ignoreBounds: true, textStyle: { fontSize: 12 }, cssClassNames: {
-              tooltip: 'rounded-md p-2 shadow-md bg-white',
-              },
-            },
-            
-          }}
-        />
-      </div>
-      </div>
-    );
-  }
+  return (
+    <Stack direction="column" spacing={1} sx={{ width: '100%', height: '100%' }}>
+      <BarChart
+        series={[
+          { dataKey: 'high', layout, stack: 'stack', colorKey: 'color' },
+        ]}
+        {...(layout === 'vertical' ? chartSettingsV(dataset) : chartSettingsH(dataset))}
+        borderRadius={10}
+        sx={{ height: '80%' }}
+        margin={{
+          left: 30,
+          right: 30,
+          top: 30,
+          bottom: 30,
+        }}
+      />
+    </Stack>
+  );
 }
+
+GraficoColunas.propTypes = {
+  data: PropTypes.object.isRequired,
+};
+
+const chartSettingsH = (dataset) => ({
+  dataset,
+  yAxis: [{ scaleType: 'band', dataKey: 'order' }],
+  sx: {
+    [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
+      transform: 'translateX(-10px)',
+    },
+  },
+});
+
+const chartSettingsV = (dataset) => ({
+  ...chartSettingsH(dataset),
+  xAxis: [{ scaleType: 'band', dataKey: 'order' }],
+  yAxis: undefined,
+});
 
 export default GraficoColunas;

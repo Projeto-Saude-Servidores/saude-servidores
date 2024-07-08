@@ -68,13 +68,16 @@ def get_average_pain_by_sector():
     # Calcular o nível médio de dor por setor e aplicar as abreviações definidas manualmente
     sector_average_pain = df.groupby('7. Setor da Reitoria:')['Average Pain Level'].mean().reset_index()
     sector_average_pain['7. Setor da Reitoria:'] = sector_average_pain['7. Setor da Reitoria:'].map(department_abbreviations)
-    sector_average_pain_dict = sector_average_pain.set_index('7. Setor da Reitoria:')['Average Pain Level'].to_dict()
+    
+    # Arredondar os valores para 2 casas decimais
+    sector_average_pain_dict = sector_average_pain.set_index('7. Setor da Reitoria:')['Average Pain Level'].round(2).to_dict()
     
     # Usar json.dumps para garantir que os caracteres não sejam escapados
     response_json = json.dumps(sector_average_pain_dict, ensure_ascii=False)
     
     # Retornar a resposta JSON com o mime type application/json
     return Response(response_json, content_type="application/json; charset=utf-8")
+
 
 
 @app.route('/api/amostragem', methods=['GET'])
