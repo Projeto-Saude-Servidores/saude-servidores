@@ -54,7 +54,6 @@ export default function Home() {
             <div className="bg-white rounded-full border-black border-2 pt-1 pb-1 px-2 text-center flex items-center justify-center w-auto">
               <AssignmentIndIcon /> Nível de dores por departamento
             </div>
-
             <div className="rounded-md w-full h-full">
               <GraficoColunas data={responseData} />
             </div>

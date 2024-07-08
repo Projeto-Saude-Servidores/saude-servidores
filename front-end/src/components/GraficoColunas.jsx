@@ -27,6 +27,12 @@ function GraficoColunas({ data }) {
     return acc;
   }, {});
 
+  const legendItems = [
+    { label: 'bom', color: '#76B7B2' },
+    { label: 'médio', color: '#EDC949' },
+    { label: 'ruim', color: '#E15759' },
+  ];
+
   console.log('dataset:', JSON.stringify(dataset, null, 2));
   console.log('colorMap:', JSON.stringify(colorMap, null, 2));
 
@@ -59,6 +65,14 @@ function GraficoColunas({ data }) {
           right: 30,
           top: 30,
           bottom: 30,
+        }}
+        slotProps={{
+          legend: {
+            items: legendItems.map((item) => ({
+              label: item.label,
+              marker: { fill: item.color },
+            })),
+          },
         }}
       />
     </Stack>
