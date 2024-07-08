@@ -1,15 +1,9 @@
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import Stack from '@mui/material/Stack';
 import PropTypes from 'prop-types';
 
 function GraficoColunas({ data }) {
-  console.log('Dataset:', data); // Verifica os dados recebidos antes do processamento
-
-  const [layout, setLayout] = React.useState('vertical');
-
-  // Função para determinar a cor com base nos dados
   const getColor = (value) => {
     if (value < 1) {
       return '#76B7B2';
@@ -21,22 +15,43 @@ function GraficoColunas({ data }) {
   };
 
   const dataset = React.useMemo(() => {
-    return Object.entries(data).map(([key, value]) => ({
-      order: key,
-      high: value,
-      color: getColor(value), // Adiciona a cor com base nos critérios definidos
+    return Object.entries(data).map(([order, high]) => ({
+      order,
+      high,
+      color: getColor(high),
     }));
   }, [data]);
 
-  console.log('Dataset com cores:', dataset); // Verifica o dataset com as cores atribuídas
+  const colorMap = dataset.reduce((acc, item) => {
+    acc[item.order] = item.color;
+    return acc;
+  }, {});
+
+  console.log('dataset:', JSON.stringify(dataset, null, 2));
+  console.log('colorMap:', JSON.stringify(colorMap, null, 2));
 
   return (
     <Stack direction="column" spacing={1} sx={{ width: '100%', height: '100%' }}>
       <BarChart
         series={[
-          { dataKey: 'high', layout, stack: 'stack', colorKey: 'color' },
+          {
+            dataKey: 'high',
+            layout: 'vertical',
+            stack: 'stack',
+          },
         ]}
-        {...(layout === 'vertical' ? chartSettingsV(dataset) : chartSettingsH(dataset))}
+        dataset={dataset}
+        xAxis={[
+          {
+            scaleType: 'band',
+            dataKey: 'order',
+            colorMap: {
+              type: 'ordinal',
+              colors: Object.values(colorMap),
+            },
+          },
+        ]}
+        yAxis={[]}
         borderRadius={10}
         sx={{ height: '80%' }}
         margin={{
@@ -53,21 +68,5 @@ function GraficoColunas({ data }) {
 GraficoColunas.propTypes = {
   data: PropTypes.object.isRequired,
 };
-
-const chartSettingsH = (dataset) => ({
-  dataset,
-  yAxis: [{ scaleType: 'band', dataKey: 'order' }],
-  sx: {
-    [`& .${axisClasses.directionY} .${axisClasses.label}`]: {
-      transform: 'translateX(-10px)',
-    },
-  },
-});
-
-const chartSettingsV = (dataset) => ({
-  ...chartSettingsH(dataset),
-  xAxis: [{ scaleType: 'band', dataKey: 'order' }],
-  yAxis: undefined,
-});
 
 export default GraficoColunas;
