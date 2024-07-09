@@ -5,9 +5,10 @@ import axios from "axios";
 import GraficoColunas from "@/components/GraficoColunas";
 import NavBar from "@/components/NavBar";
 import SectorPainChart from "@/components/Sector";
-import ManageSearchIcon from '@mui/icons-material/ManageSearch';
-import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import OverviewData from "@/components/Overview";
+import SectorStack from "@/components/SectorStack";
 
 // Componente Home principal
 export default function Home() {
@@ -38,7 +39,10 @@ export default function Home() {
           setSectorData(response.data);
         })
         .catch((error) => {
-          console.error(`Erro na requisição para o setor ${selectedSector}:`, error);
+          console.error(
+            `Erro na requisição para o setor ${selectedSector}:`,
+            error
+          );
           setSectorData({});
         });
     } else {
