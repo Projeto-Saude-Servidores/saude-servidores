@@ -30,8 +30,29 @@ function GraficoColunas({ data }) {
   console.log('dataset:', JSON.stringify(dataset, null, 2));
   console.log('colorMap:', JSON.stringify(colorMap, null, 2));
 
+  // Definição da legenda personalizada com espaçamento ajustado
+  const customLegend = (
+    <Stack direction="row" spacing={2} className="pr-8" justifyContent="flex-end" sx={{ marginRight: 4 }}>
+      <Stack direction="row" spacing={0.5} alignItems="center">
+        <div style={{ width: 20, height: 20, backgroundColor: '#76B7B2' }} />
+        <span>Bom</span>
+      </Stack>
+      <Stack direction="row" spacing={0.5} alignItems="center">
+        <div style={{ width: 20, height: 20, backgroundColor: '#EDC949' }} />
+        <span>Médio</span>
+      </Stack>
+      <Stack direction="row" spacing={0.5} alignItems="center">
+        <div style={{ width: 20, height: 20, backgroundColor: '#E15759' }} />
+        <span>Ruim</span>
+      </Stack>
+    </Stack>
+  );
+
   return (
     <Stack direction="column" spacing={1} sx={{ width: '100%', height: '100%' }}>
+      <Stack direction="column" spacing={1}>
+        {customLegend}
+      </Stack>
       <BarChart
         series={[
           {
@@ -53,12 +74,12 @@ function GraficoColunas({ data }) {
         ]}
         yAxis={[]}
         borderRadius={10}
-        sx={{ height: '80%' }}
+        sx={{ height: '70%' }}
         margin={{
           left: 30,
           right: 30,
           top: 30,
-          bottom: 30,
+          bottom: 35,
         }}
       />
     </Stack>
