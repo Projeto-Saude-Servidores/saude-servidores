@@ -18,8 +18,8 @@ export default function Banner({ onclick }) {
         <Image
           src={Logo}
           alt="Logo-UPE"
-          width={100}
-          height={50}
+          width={80}
+          height={40}
           priority={true}
         />
       </section>
