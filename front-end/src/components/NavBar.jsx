@@ -27,7 +27,7 @@ export default function NavBar({ children }) {
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen w-full pt-[90px]">
+    <div className="relative flex flex-col min-h-screen w-full pt-[50px]">
       <Banner onclick={handleDrawerToggle} />
       <header
         className={` text-black flex justify-between items-center items-center flex ${
@@ -37,8 +37,8 @@ export default function NavBar({ children }) {
       ></header>
       <div
         // branco ficou estranho, mas pode alterar aqui a cor da barra lateral
-        className={` mt-[90px] fixed  top-0 left-0 w-64 bg-white border-black text-blue-500 h-full transform ${
-          open ? "translate-x-0 " : "-translate-x-full"
+        className={` mt-[50px] fixed  top-0 left-0 w-[15%] bg-white border-black text-blue-500 h-full transform ${
+          open ? "translate-x-0 " : " -translate-x-full"
         } transition-transform duration-700`}
       >
         <ul>
@@ -55,8 +55,8 @@ export default function NavBar({ children }) {
         <hr className="my-4 border-gray-700" />
       </div>
       <main
-        className={`flex-grow h-max w-full border-2 px-0  bg-gray-300 ${
-          open ? "ml-64  bg-gray-300" : "  bg-gray-300 h-max w-full px-0"
+        className={`flex-grow ml h-max w-full border-2 px-0  bg-gray-300 ${
+          open ? "ml-[228px] bg-gray-300" : "  bg-gray-300 h-max w-full px-0"
         }`}
       >
         {children}
