@@ -1,10 +1,10 @@
 "use client";
 
-import SectorStack from "../../../src/components/SectorStack";
+import TableSector from "../../../src/components/TableSector";
 export default function Page() {
   return (
     <div className=" w-screen h-screen">
-      <SectorStack sector={"ADM"} />;
+      <TableSector sector={"ADM"} />;
     </div>
   );
 }

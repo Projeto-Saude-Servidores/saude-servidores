@@ -7,6 +7,7 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 // import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import OverviewData from "@/components/Overview";
 import SectorStack from "../components/SectorStack";
+import TableSector from "@/components/TableSector";
 
 export default function Home() {
   const [responseData, setResponseData] = useState({});
@@ -83,7 +84,10 @@ export default function Home() {
             <div className="bg-white rounded-full mb-1 border-black border-2 pl-3 pr-3 pt-1 pb-1 text-center">
               Resumo das Respostas
             </div>
-            {selectedSector && <OverviewData sectorData={sectorData} />}
+            <hr className="my-4 border-gray-700" />
+            <div>
+              <TableSector sector={selectedSector} />
+            </div>
           </div>
         </div>
         <div className=" h-44 "></div>
