@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import CircularProgress from "@mui/material/CircularProgress";
+import Stack from '@mui/material/Stack';
 
 export default function SectorStack({ sector }) {
   const [painData, setPainData] = useState(null);
@@ -48,7 +49,8 @@ export default function SectorStack({ sector }) {
   const bodyPartNames = painData["nível 0"].map((item) => Object.keys(item)[0]);
 
   return (
-    <BarChart
+    <Stack direction="column" spacing={1} sx={{ width: '100%', height: '100%' }}>
+        <BarChart
       tooltip={{ trigger: "item" }}
       axisHighlight={{
         x: "line",
@@ -94,20 +96,16 @@ export default function SectorStack({ sector }) {
           label: "Nível 5",
         },
       ]}
-      width={800}
-      height={350}
+      sx={{ height: '80%' }}
       colors={[
-        "#c0c0c0",
-        "#808080",
-        "#2ca02c",
-        "#1f77b4",
-        "#ff7f0e",
-        "#d62728",
+        "#000080",
+        "#1E90FF",
+        "#00FF7F",
+        "#EDC949",
+        "#E15759",
+        "#8B4513",
       ]}
-      legend={{
-        title: "Níveis de Dor",
-      }}
-      margin={{ right: 100, left: 150, top: 0, bottom: 50 }}
+      margin={{ right: 100, left: 150, top: 0, bottom: 25 }}
       slotProps={{
         legend: {
           direction: "column",
@@ -127,5 +125,7 @@ export default function SectorStack({ sector }) {
         },
       }}
     />
+    </Stack>
+    
   );
 }
