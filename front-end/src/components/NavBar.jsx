@@ -37,14 +37,10 @@ export default function NavBar({ children }) {
       ></header>
       <div
         // branco ficou estranho, mas pode alterar aqui a cor da barra lateral
-        className={`absolute pt-[90px] top-0 left-0 w-64 bg-white border-black text-blue-500 h-full transform ${
+        className={` mt-[90px] fixed  top-0 left-0 w-64 bg-white border-black text-blue-500 h-full transform ${
           open ? "translate-x-0 " : "-translate-x-full"
         } transition-transform duration-700`}
       >
-        <button className="text-2xl p-4" onClick={handleDrawerToggle}>
-          <CancelOutlinedIcon className="transition-transform duration-300 text-red-500 hover:scale-105 hover:text-red-500" />
-        </button>
-
         <ul>
           {menuItems.map((item, index) => {
             return (
