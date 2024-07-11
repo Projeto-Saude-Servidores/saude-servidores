@@ -1,87 +1,129 @@
-"use client";
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
+import CircularProgress from "@mui/material/CircularProgress";
 
-export default function SectorStack() {
+export default function SectorStack({ sector }) {
+  const [painData, setPainData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:5000/api/setores/${sector}`
+        );
+        if (!response.ok) {
+          throw new Error("Erro ao buscar os dados");
+        }
+        const data = await response.json();
+        setPainData(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao buscar os dados:", error);
+        setLoading(false); // Marca o carregamento como completo mesmo em caso de erro
+      }
+    };
+
+    fetchData();
+  }, [sector]);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
+  }
+  if (!painData || !painData["nível 0"]) {
+    return <div>Dados não encontrados ou formato inválido.</div>;
+  }
+
+  const bodyPartNames = painData["nível 0"].map((item) => Object.keys(item)[0]);
+
   return (
     <BarChart
+      tooltip={{ trigger: "item" }}
       axisHighlight={{
         x: "line",
-        y: "line",
+        y: "band",
       }}
       layout="horizontal"
       yAxis={[
         {
           scaleType: "band",
-          data: [
-            "DOR1",
-            "DOR2",
-            "DOR3",
-            "DOR4",
-            "DOR5",
-            "DOR6",
-            "DOR7",
-            "DOR8",
-            "DOR9",
-            "DOR10",
-            "DOR11",
-            "DOR12",
-            "DOR13",
-            "DOR14",
-          ],
+          data: bodyPartNames, // Usando os nomes das partes do corpo como dados do eixo Y
         },
       ]}
       series={[
         {
-          // [nivel1 de pescoço, nivel 1 de punho,....]
-          data: [3, 4, 1, 6, 5, 7, 2, 3, 4, 5, 6, 7, 2, 3],
+          data: painData["nível 0"].map((item) => item[Object.keys(item)[0]]),
+          stack: "A",
+          label: "Nível 0",
+          highlighted: { additionalRadius: 10 }, // Adiciona um brilho adicional ao passar o mouse
+        },
+        {
+          data: painData["nível 1"].map((item) => item[Object.keys(item)[0]]),
           stack: "A",
           label: "Nível 1",
         },
         {
-          data: [4, 3, 1, 5, 8, 2, 4, 5, 6, 7, 2, 3, 4, 5],
+          data: painData["nível 2"].map((item) => item[Object.keys(item)[0]]),
           stack: "A",
           label: "Nível 2",
         },
         {
-          data: [4, 2, 5, 4, 1, 3, 4, 5, 6, 2, 3, 4, 5, 6],
+          data: painData["nível 3"].map((item) => item[Object.keys(item)[0]]),
           stack: "A",
           label: "Nível 3",
         },
         {
-          data: [2, 8, 1, 3, 1, 5, 6, 7, 2, 3, 4, 5, 6, 2],
+          data: painData["nível 4"].map((item) => item[Object.keys(item)[0]]),
           stack: "A",
           label: "Nível 4",
         },
         {
-          data: [2, 8, 1, 3, 1, 2, 3, 4, 5, 6, 7, 2, 3, 4],
+          data: painData["nível 5"].map((item) => item[Object.keys(item)[0]]),
           stack: "A",
           label: "Nível 5",
         },
       ]}
-      width={600}
+      width={800}
       height={350}
-      colors={[" #808080", "#1f77b4", "#2ca02c", "#ff7f0e", "#d62728"]}
-      // Cores personalizadas para as barras
+      colors={[
+        "#c0c0c0",
+        "#808080",
+        "#2ca02c",
+        "#1f77b4",
+        "#ff7f0e",
+        "#d62728",
+      ]}
       legend={{
-        title: "Níveis de Dor", // Título da legenda
+        title: "Níveis de Dor",
       }}
-      margin={{ right: 100 }}
+      margin={{ right: 100, left: 150, top: 0, bottom: 50 }}
       slotProps={{
-        // Estilizações adicionais
         legend: {
           direction: "column",
           position: { vertical: "middle", horizontal: "right" },
           padding: 0,
         },
         xAxis: {
-          tickLabelProps: { fontSize: 12, fontFamily: "Roboto" }, // Estilo dos rótulos do eixo x
+          tickLabelProps: { fontSize: 12, fontFamily: "Roboto" },
         },
         yAxis: {
-          tickLabelProps: { fontSize: 12, fontFamily: "Roboto" }, // Estilo dos rótulos do eixo y
+          tickLabelProps: { fontSize: 12, fontFamily: "Roboto" },
+          orientation: "left",
+          margin: { left: 100 },
         },
         bar: {
-          barStyle: { borderRadius: 5 }, // Estilo das barras
+          barStyle: { borderRadius: 5 },
         },
       }}
     />

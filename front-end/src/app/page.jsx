@@ -3,11 +3,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import GraficoColunas from "@/components/GraficoColunas";
 import NavBar from "@/components/NavBar";
-import SectorPainChart from "@/components/Sector";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 // import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import OverviewData from "@/components/Overview";
-import SectorStack from "@/components/SectorStack";
+import SectorStack from "../components/SectorStack";
 
 export default function Home() {
   const [responseData, setResponseData] = useState({});
@@ -31,15 +30,12 @@ export default function Home() {
 
     if (selectedSector) {
       axios
-        .get(`http://127.0.0.1:5000/api/setores/${selectedSector}`)
+        .get(`http://127.0.0.1:5000/api/setores`)
         .then((response) => {
           setSectorData(response.data);
         })
         .catch((error) => {
-          console.error(
-            `Erro na requisição para o setor ${selectedSector}:`,
-            error
-          );
+          console.error(`Erro na requisição para o setor:`, error);
           setSectorData({});
         });
     } else {
@@ -62,24 +58,23 @@ export default function Home() {
           </div>
 
           <div className="bg-white rounded-lg h-1/2 w-full shadow-md flex flex-col items-center">
-            <div className="pb-3"></div>
-            <div className="bg-white rounded-full border-black border-2 pt-1 pb-1 text-center flex items-center justify-center w-48">
-              <ManageSearchIcon /> Selecione um Setor
+            <div className="w-full text-left pl-4 pb-1 font-bold mt-2">
+              Nível de dor específica por setor
+              {/* tirei o icon por enquanto, mas pode colocar de volta se achar mais bonito */}
             </div>
-            <div className="p-2"></div>
             <select
-              className="mb-2 border border-gray-300 rounded-md w-full text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className=" mt-2 mb-2 border border-gray-300 rounded-md w-full text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
               value={selectedSector || ""}
               onChange={handleSectorChange}
             >
-              <option value="">Setor...</option>
+              <option value="">SELECIONE O SETOR...</option>
               {Object.keys(responseData).map((sector) => (
                 <option key={sector} value={sector}>
                   {sector}
                 </option>
               ))}
             </select>
-            {selectedSector && <SectorPainChart sector={selectedSector} />}
+            {selectedSector && <SectorStack sector={selectedSector} />}
           </div>
         </div>
 
@@ -91,6 +86,7 @@ export default function Home() {
             {selectedSector && <OverviewData sectorData={sectorData} />}
           </div>
         </div>
+        <div className=" h-44 "></div>
       </div>
     </NavBar>
   );

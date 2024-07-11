@@ -2,5 +2,9 @@
 
 import SectorStack from "../../../src/components/SectorStack";
 export default function Page() {
-  return <SectorStack />;
+  return (
+    <div className=" w-screen h-screen">
+      <SectorStack sector={"ADM"} />;
+    </div>
+  );
 }

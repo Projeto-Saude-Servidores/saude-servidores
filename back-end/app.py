@@ -180,18 +180,57 @@ def get_pain_levels_by_sector(abbreviation):
     if abbreviation not in abbreviation_to_department:
         return jsonify({"error": "Setor não encontrado"}), 404
     
+
     # Filtrar os dados pelo setor
     sector_name = abbreviation_to_department[abbreviation]
     sector_data = df[df['7. Setor da Reitoria:'] == sector_name]
     
-    # Calcular a média dos níveis de dor para cada tipo de dor
-    pain_means = sector_data[pain_columns].mean().to_dict()
     
-    # Renomear as chaves do dicionário para uma forma mais amigável
-    pain_means = {col.split(' [')[1].replace(']', ''): pain_means[col] for col in pain_columns}
+    pain_sector = sector_data[pain_columns]
     
-    # Usar json.dumps para garantir que os caracteres não sejam escapados
-    response_json = json.dumps(pain_means, ensure_ascii=False)
+    #transformando df em dicionário
+    sector_dict = pain_sector.to_dict(orient='list')
+
+    response_response = {"nível 0":[] , "nível 1":[] , "nível 2":[] , "nível 3":[], "nível 4":[], "nível 5":[]}
+
+    
+    # # Renomear as chaves do dicionário para uma forma mais amigável
+    sector_dict = {
+        col.split(' [')[1].replace(']', ''):  sector_dict[col]       
+        for col in sector_dict
+    }
+
+    #contando quantidade de 0,1,2,3,4 e 5 e adicionar no response_response   
+    # ta brutão msm 
+    for chave in sector_dict:
+        qtd0=0
+        qtd1=0
+        qtd2=0
+        qtd3=0
+        qtd4=0
+        qtd5=0
+        valores = sector_dict[chave]
+        for valor in valores:
+            if valor == 0:
+                qtd0+=1
+            if valor == 1:
+                qtd1+=1
+            if valor == 2:
+                qtd2+=1
+            if valor == 3:
+                qtd3+=1
+            if valor == 4:
+                qtd4+=1
+            if valor == 5:
+                qtd5+=1    
+        response_response["nível 0"].append({chave:qtd0})
+        response_response["nível 1"].append({chave:qtd1})
+        response_response["nível 2"].append({chave:qtd2})
+        response_response["nível 3"].append({chave:qtd3})
+        response_response["nível 4"].append({chave:qtd4})
+        response_response["nível 5"].append({chave:qtd5})
+
+    response_json = json.dumps(response_response, ensure_ascii=False)
     
     # Retornar a resposta JSON com o mime type application/json
     return Response(response_json, content_type="application/json; charset=utf-8")
