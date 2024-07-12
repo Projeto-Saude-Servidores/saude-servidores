@@ -59,7 +59,29 @@ pain_columns = [
     "29. Nos últimos 12 meses, você sentiu alguma dor ou desconforto ? Indique a intensidade da dor (0 = nenhuma 5 = dor extrema) [Tornozelo/pé esquerdo]"
 ]
 
-# Rota para definir o nível de dor média de cada setor
+satisfaction_columns = [
+    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Em muitos campos a minha vida está próxima do meu ideal.]",
+    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [As minhas condições de vida são excelentes]",
+    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Estou satisfeito com a minha vida]",
+    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Até o presente momento tenho alcançado as coisas importantes que quero para a minha vida]",
+    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Se pudesse viver a minha vida de novo não mudaria quase nada]"
+]
+
+@app.route('/api/satisfacao/<sector>', methods=['GET'])
+def get_satisfaction_data_by_sector(sector):
+    satisfaction_columns = [col for col in df.columns if "Sobre a sua satisfação com a vida" in col]
+
+    sector_name = [k for k, v in department_abbreviations.items() if v == sector][0]
+    sector_data = df[df['7. Setor da Reitoria:'] == sector_name]
+
+    satisfaction_counts = {}
+    for column in satisfaction_columns:
+        counts = sector_data[column].value_counts().to_dict()
+        satisfaction_counts[column] = counts
+
+    response_json = json.dumps(satisfaction_counts, ensure_ascii=False)
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
 @app.route('/api/setores', methods=['GET'])
 def get_average_pain_by_sector():
     # Calcular o nível médio de dor para cada pessoa

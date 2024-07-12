@@ -9,9 +9,10 @@ export default function Sample() {
     });
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:5000/api/setores')
+        axios.get('http://127.0.0.1:5000/api/data')
             .then(response => {
                 const responseData = response.data;
+                console.log("Todos os dados: ");
                 console.log(responseData);
             })
             .catch(error => console.error('Erro na requisição:', error));
