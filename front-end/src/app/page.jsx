@@ -10,22 +10,15 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import TableSector from "@/components/TableSector";
 import GraficoSatisfacao from "@/components/SatisfactionChart";
 import Sample from "@/components/Sample";
-
+import GraficoPostura from "@/components/PostureChart"
+import GraficoAmbiente from "@/components/WorkplaceChart"
 
 export default function Home() {
-  const satisfactionColumns = [
-    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Em muitos campos a minha vida está próxima do meu ideal.]",
-    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [As minhas condições de vida são excelentes]",
-    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Estou satisfeito com a minha vida]",
-    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Até o presente momento tenho alcançado as coisas importantes que quero para a minha vida]",
-    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Se pudesse viver a minha vida de novo não mudaria quase nada]"
-  ];
 
   const [responseData, setResponseData] = useState({});
   const [selectedSector, setSelectedSector] = useState("");
   const [sectorData, setSectorData] = useState({});
-  const [chartType, setChartType] = useState("pain"); // Define o tipo de gráfico padrão como "pain"
-  const [satisfactionType, setSatisfactionType] = useState("30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Em muitos campos a minha vida está próxima do meu ideal.]"); // Define o tipo de gráfico padrão como "pain"
+  const [chartType, setChartType] = useState("pain"); 
 
   useEffect(() => {
     axios
@@ -44,13 +37,13 @@ export default function Home() {
   };
 
   const handleChartTypeChange = (event) => {
-    setChartType(event.target.value); // Atualiza o tipo de gráfico com base na seleção do usuário
+    setChartType(event.target.value);
   };
 
   const fetchSectorData = (sector) => {
     if (sector) {
       axios
-        .get(`http://127.0.0.1:5000/api/${chartType}/${sector}`) // Usa chartType para determinar o endpoint da API dinamicamente
+        .get(`http://127.0.0.1:5000/api/${chartType}/${sector}`)
         .then((response) => {
           setSectorData(response.data);
         })
@@ -131,6 +124,8 @@ export default function Home() {
                     
                     <MenuItem value="pain">Nível de Dores</MenuItem>
                     <MenuItem value="satisfaction">Satisfação com a Vida</MenuItem>
+                    <MenuItem value="posture">Postura</MenuItem>
+                    <MenuItem value="workplace">Ambiente De Trabalho</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -142,6 +137,12 @@ export default function Home() {
               )}
               {selectedSector && chartType === "satisfaction" && (
                 <GraficoSatisfacao sector={selectedSector} />
+              )}
+              {selectedSector && chartType === "posture" && (
+                <GraficoPostura sector={selectedSector} />
+              )}
+              {selectedSector && chartType === "workplace" && (
+                <GraficoAmbiente sector={selectedSector} />
               )}
             </div>
           </div>

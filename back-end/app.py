@@ -257,5 +257,58 @@ def get_pain_levels_by_sector(abbreviation):
     # Retornar a resposta JSON com o mime type application/json
     return Response(response_json, content_type="application/json; charset=utf-8")
 
+posture_columns = [
+    "21. Quando sentado na sua cadeira, sua mesa de trabalho fica na altura do seu cotovelo?",
+    "22. Ao trabalhar sentado na cadeira, você apoia seus pés no chão ou em algum suporte?",
+    "23. Sua cadeira possui altura ajustável do assento?",
+    "24. Com relação a cadeira, ela possui encosto com a forma levemente adaptada ao corpo para proteção da região lombar?",
+    "25. A mesa de trabalho ou cadeira proporciona espaço ou suporte para apoiar os antebraços?",
+    "26. Ao utilizar o computador durante o trabalho, você utiliza:",
+    "27. Ao utilizar o computador durante o trabalho, você utiliza:",
+    "28. A borda superior da tela do seu computador está na altura dos seus olhos?"
+]
+
+@app.route('/api/postura/<sector>', methods=['GET'])
+def get_posture_data_by_sector(sector):
+    posture_columns = [col for col in df.columns if col.startswith(("21.", "22.", "23.", "24.", "25.", "26.", "27.", "28."))]
+
+    sector_name = [k for k, v in department_abbreviations.items() if v == sector][0]
+    sector_data = df[df['7. Setor da Reitoria:'] == sector_name]
+
+    posture_counts = {}
+    for column in posture_columns:
+        counts = sector_data[column].value_counts().to_dict()
+        posture_counts[column] = counts
+
+    response_json = json.dumps(posture_counts, ensure_ascii=False)
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
+workplace_columns = [
+    "12. Como é o seu relacionamento com colegas do setor?",
+    "13. Como é o seu relacionamento com a sua chefia?",
+    "14. Você classifica o seu trabalho como monótono?",
+    "15. Você se sente estressado durante o seu trabalho?",
+    "16. O seu trabalho exige esforço mental?",
+    "17. Você possui conhecimento em relação a ergonomia?",
+    "18. Como você classifica o ruído no seu ambiente de trabalho?",
+    "19. Como você classifica a temperatura no seu ambiente de trabalho?",
+    "20. A iluminação incomoda na realização do seu trabalho?"
+]
+
+@app.route('/api/ambiente/<sector>', methods=['GET'])
+def get_workplace_data_by_sector(sector):
+    workplace_columns = [col for col in df.columns if col.startswith(("12.", "13.", "14.", "15.", "16.", "17.", "18.", "19.","20."))]
+
+    sector_name = [k for k, v in department_abbreviations.items() if v == sector][0]
+    sector_data = df[df['7. Setor da Reitoria:'] == sector_name]
+
+    workplace_counts = {}
+    for column in workplace_columns:
+        counts = sector_data[column].value_counts().to_dict()
+        workplace_counts[column] = counts
+
+    response_json = json.dumps(workplace_counts, ensure_ascii=False)
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
