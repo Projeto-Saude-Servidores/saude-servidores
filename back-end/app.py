@@ -310,5 +310,26 @@ def get_workplace_data_by_sector(sector):
     response_json = json.dumps(workplace_counts, ensure_ascii=False)
     return Response(response_json, content_type="application/json; charset=utf-8")
 
+health_columns = [
+    "9. Você pratica alguma atividade física regularmente (mínimo 3 vezes por semana)?",
+    "10. Você possuí algum problema de saúde? Liste abaixo:",
+    "11. Tem alguma deficiência, se sim qual(ais)"
+]
+
+@app.route('/api/saude/<sector>', methods=['GET'])
+def get_health_data_by_sector(sector):
+    health_columns = [col for col in df.columns if col.startswith(("9.", "10.", "11."))]
+
+    sector_name = [k for k, v in department_abbreviations.items() if v == sector][0]
+    sector_data = df[df['7. Setor da Reitoria:'] == sector_name]
+
+    health_counts = {}
+    for column in health_columns:
+        counts = sector_data[column].value_counts().to_dict()
+        health_counts[column] = counts
+
+    response_json = json.dumps(health_counts, ensure_ascii=False)
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

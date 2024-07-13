@@ -12,6 +12,7 @@ import GraficoSatisfacao from "@/components/SatisfactionChart";
 import Sample from "@/components/Sample";
 import GraficoPostura from "@/components/PostureChart"
 import GraficoAmbiente from "@/components/WorkplaceChart"
+import GraficoSaude from "@/components/HealthChart"
 
 export default function Home() {
 
@@ -126,6 +127,7 @@ export default function Home() {
                     <MenuItem value="satisfaction">Satisfação com a Vida</MenuItem>
                     <MenuItem value="posture">Postura</MenuItem>
                     <MenuItem value="workplace">Ambiente De Trabalho</MenuItem>
+                    <MenuItem value="health">Saúde</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -143,6 +145,9 @@ export default function Home() {
               )}
               {selectedSector && chartType === "workplace" && (
                 <GraficoAmbiente sector={selectedSector} />
+              )}
+              {selectedSector && chartType === "health" && (
+                <GraficoSaude sector={selectedSector} />
               )}
             </div>
           </div>
