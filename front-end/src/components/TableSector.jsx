@@ -207,16 +207,11 @@ export default function TableSector({ sector }) {
   return (
     <div>
       <section className=" px-2">
-        <h2 className=" mb-2">
-          O nível que apresenta a maior frequência no setor {sector} é o{" "}
-          <span className="font-extrabold">nível {pos}</span>, apresentando
-          abaixo as porcentagens de cada dor.
-        </h2>
-
         <h2>
           Porcentagem com base na quantidade de entrevistados:
           <span className=" font-extrabold"> {soma} </span>
         </h2>
+        <select></select>
       </section>
       <section>
         <TableContainer component={Paper}>

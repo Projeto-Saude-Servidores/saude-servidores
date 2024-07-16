@@ -59,8 +59,8 @@ export default function Home() {
 
   return (
     <NavBar>
-      <div className="h-screen flex flex-row flex-grow gap-5 p-5 w-full items-center bg-gray-200">
-        <div className="flex flex-col gap-5 w-1/2 justify-center items-center h-full">
+      <div className="h-max flex flex-row  flex-grow gap-5 p-5 w-full items-center bg-gray-200">
+        <div className="flex flex-col gap-5 h-max w-1/2 justify-center items-center h-full">
           <div className="bg-white rounded-lg h-1/2 w-full pt-3 shadow-md flex flex-col items-center">
             <div className="w-full text-left items-start pl-4 pb-1 font-bold">
               Nível de dores por departamento
@@ -151,7 +151,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex flex-col h-full w-1/2 justify-start items-center">
+        <div className="flex flex-col h-max w-1/2 justify-start items-center">
           <div className="bg-white rounded-lg h-full w-full pt-3 shadow-md flex flex-col justify-start items-center">
             <div className="bg-white rounded-full mb-1 border-black border-2 pl-3 pr-3 pt-1 pb-1 text-center">
               Resumo das Respostas
@@ -161,7 +161,7 @@ export default function Home() {
               <TableSector sector={selectedSector} />
             </div>
             <div className=" w-1/2">
-              <CorpoHumano />
+              <CorpoHumano sector={selectedSector} />
             </div>
           </div>
         </div>
