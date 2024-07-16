@@ -10,16 +10,16 @@ import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import TableSector from "@/components/TableSector";
 import GraficoSatisfacao from "@/components/SatisfactionChart";
 import Sample from "@/components/Sample";
-import GraficoPostura from "@/components/PostureChart"
-import GraficoAmbiente from "@/components/WorkplaceChart"
-import GraficoSaude from "@/components/HealthChart"
+import GraficoPostura from "@/components/PostureChart";
+import GraficoAmbiente from "@/components/WorkplaceChart";
+import GraficoSaude from "@/components/HealthChart";
+import CorpoHumano from "@/components/CorpoHumano";
 
 export default function Home() {
-
   const [responseData, setResponseData] = useState({});
   const [selectedSector, setSelectedSector] = useState("");
   const [sectorData, setSectorData] = useState({});
-  const [chartType, setChartType] = useState("pain"); 
+  const [chartType, setChartType] = useState("pain");
 
   useEffect(() => {
     axios
@@ -92,8 +92,6 @@ export default function Home() {
                         },
                       },
                     }}
-
-                    
                   >
                     {Object.keys(responseData).map((sector) => (
                       <MenuItem key={sector} value={sector}>
@@ -121,10 +119,10 @@ export default function Home() {
                       },
                     }}
                   >
-
-                    
                     <MenuItem value="pain">Nível de Dores</MenuItem>
-                    <MenuItem value="satisfaction">Satisfação com a Vida</MenuItem>
+                    <MenuItem value="satisfaction">
+                      Satisfação com a Vida
+                    </MenuItem>
                     <MenuItem value="posture">Postura</MenuItem>
                     <MenuItem value="workplace">Ambiente De Trabalho</MenuItem>
                     <MenuItem value="health">Saúde</MenuItem>
@@ -161,6 +159,9 @@ export default function Home() {
             <hr className="my-4 border-gray-700" />
             <div>
               <TableSector sector={selectedSector} />
+            </div>
+            <div className=" w-1/2">
+              <CorpoHumano />
             </div>
           </div>
         </div>
