@@ -1,93 +1,3 @@
-// import * as React from "react";
-
-// import { useEffect, useState } from "react";
-
-// export default function TableSector({ sector }) {
-//   const [painData, setPainData] = useState([]);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const response = await fetch(
-//           `http://127.0.0.1:5000/api/setores/${sector}`
-//         );
-//         if (!response.ok) {
-//           throw new Error("Erro ao buscar os dados");
-//         }
-//         const data = await response.json();
-//         console.log("Dados recebidos:", data); // Verifique os dados recebidos no console
-//         setPainData(data);
-//         setLoading(false);
-//       } catch (error) {
-//         console.error("Erro ao buscar os dados:", error);
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchData();
-//   }, [sector]);
-
-//   if (loading) {
-//     return <p>Carregando...</p>;
-//   }
-
-//   const bodyPartNames = painData["nível 0"].map((item) => Object.keys(item)[0]);
-
-//   //Quantidade de pessoas entrevistadas
-//   let soma = 0;
-
-//   for (let index = 0; index < 6; index++) {
-//     const qtdEntrevistado =
-//       painData[`nível ${index}`][0][
-//         Object.keys(painData[`nível ${index}`][0])[0]
-//       ];
-//     soma += qtdEntrevistado;
-//   }
-//   console.log("quatnas pessoas fizeram a entrevista", soma);
-
-//   //pegar onde tem a maior frequencia de respostas e apresentar a porcentagem
-
-//   let porcentagem = [];
-//   let maior = [];
-
-//   for (let index = 0; index < 6; index++) {
-//     const values = painData[`nível ${index}`].map(
-//       (item) => Object.values(item)[0]
-//     );
-
-//     let nivelPorcentagem = values.map((valor) =>
-//       ((valor / soma) * 100).toFixed(2)
-//     );
-//     porcentagem.push(nivelPorcentagem);
-//     let sum = 0;
-//     for (let i = 0; i < values.length; i++) {
-//       sum += values[i];
-//     }
-//     maior.push(sum);
-//   }
-
-//   let pos = 0;
-//   let maxValue = maior[0];
-
-//   for (let i = 1; i < maior.length; i++) {
-//     if (maior[i] > maxValue) {
-//       maxValue = maior[i];
-//       pos = i;
-//     }
-//   }
-//   console.log(`O maior valor é no nível ${pos}`);
-//   console.log(porcentagem[pos]);
-
-//   return (
-//     <div>
-//       <ul>
-//         {`O total de pessoas entrevistadas foram: ${soma}, tendo como amaior frequecia de dor no nível ${pos},  tendo como porcentagens para cada dor: ${porcentagem[pos]}`}
-//       </ul>
-//     </div>
-//   );
-// }
-
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -98,6 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
+import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -127,6 +38,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function TableSector({ sector }) {
   const [painData, setPainData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [chartType, setChartType] = useState("nivel-0");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -154,6 +66,9 @@ export default function TableSector({ sector }) {
     return <p>Carregando...</p>;
   }
 
+  const handleChartTypeChange = (event) => {
+    setChartType(event.target.value);
+  };
   const bodyPartNames = painData["nível 0"]
     ? painData["nível 0"].map((item) => Object.keys(item)[0])
     : [];
@@ -176,7 +91,6 @@ export default function TableSector({ sector }) {
   //pegar onde tem a maior frequencia de respostas e apresentar a porcentagem
 
   let porcentagem = [];
-  let maior = [];
 
   for (let index = 0; index < 6; index++) {
     const values = painData[`nível ${index}`]
@@ -187,33 +101,44 @@ export default function TableSector({ sector }) {
       ((valor / soma) * 100).toFixed(2)
     );
     porcentagem.push(nivelPorcentagem);
-    let sum = 0;
-    for (let i = 0; i < values.length; i++) {
-      sum += values[i];
-    }
-    maior.push(sum);
-  }
-
-  let pos = 0;
-  let maxValue = maior[0];
-
-  for (let i = 1; i < maior.length; i++) {
-    if (maior[i] > maxValue) {
-      maxValue = maior[i];
-      pos = i;
-    }
   }
 
   return (
-    <div>
+    <div className=" w-full">
       <section className=" px-2">
         <h2>
           Porcentagem com base na quantidade de entrevistados:
           <span className=" font-extrabold"> {soma} </span>
         </h2>
-        <select></select>
+        <FormControl
+          variant="outlined"
+          className="ml-2 mt-2 mb-2"
+          sx={{ minWidth: 120 }}
+          size="small"
+        >
+          <InputLabel>% do Nível</InputLabel>
+          <Select
+            value={chartType}
+            onChange={handleChartTypeChange}
+            label="Nível"
+            MenuProps={{
+              PaperProps: {
+                style: {
+                  textAlign: "center",
+                },
+              },
+            }}
+          >
+            <MenuItem value="nivel-0">nivel-0</MenuItem>
+            <MenuItem value="nivel-1">nivel-1</MenuItem>
+            <MenuItem value="nivel-2">nivel-2</MenuItem>
+            <MenuItem value="nivel-3">nivel-3</MenuItem>
+            <MenuItem value="nivel-4">nivel-4</MenuItem>
+            <MenuItem value="nivel-5">nivel-5</MenuItem>
+          </Select>
+        </FormControl>
       </section>
-      <section>
+      <section className=" w-full">
         <TableContainer component={Paper}>
           <Table stickyHeader aria-label="customized table">
             <TableHead>
@@ -229,7 +154,12 @@ export default function TableSector({ sector }) {
                     {valor}
                   </StyledTableCell>
                   <StyledTableCell align="right">
-                    {porcentagem[pos][index]}%
+                    {chartType === "nivel-0" && porcentagem[0][index]}
+                    {chartType === "nivel-1" && porcentagem[1][index]}
+                    {chartType === "nivel-2" && porcentagem[2][index]}
+                    {chartType === "nivel-3" && porcentagem[3][index]}
+                    {chartType === "nivel-4" && porcentagem[4][index]}
+                    {chartType === "nivel-5" && porcentagem[5][index]}%
                   </StyledTableCell>
                 </StyledTableRow>
               ))}

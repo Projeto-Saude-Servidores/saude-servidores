@@ -56,8 +56,8 @@ export default function NavBar({ children }) {
         <hr className="my-4 border-gray-700" />
       </div>
       <main
-        className={`flex-grow ml h-max w-full border-2 px-0  bg-gray-300 ${
-          open ? "ml-[228px] bg-gray-300" : "  bg-gray-300 h-max w-full px-0"
+        className={`flex-grow ml h-full w-full border-2 px-0  bg-gray-300 ${
+          open ? "ml-[210px] bg-gray-300" : "  bg-gray-300 h-full w-full px-0"
         }`}
       >
         {children}

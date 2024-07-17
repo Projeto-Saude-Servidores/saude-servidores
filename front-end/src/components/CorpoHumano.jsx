@@ -82,8 +82,8 @@ const CorpoHumano = ({ sector }) => {
   // Calcula a porcentagem para cada posição
   const porcentagem = somaNiveis.map((element) => (element / (soma * 6)) * 100);
 
-  console.log("Somas dos níveis:", somaNiveis);
-  console.log("Porcentagem:", porcentagem);
+  // console.log("Somas dos níveis:", somaNiveis);
+  // console.log("Porcentagem:", porcentagem);
   for (let index = 0; index < porcentagem.length; index++) {
     const element = porcentagem[index];
     if (element <= 20) {
@@ -102,7 +102,6 @@ const CorpoHumano = ({ sector }) => {
       porcentagem[index] = cores.cor5;
     }
   }
-  console.log(porcentagem);
 
   return (
     <div className=" w-full h-full">
