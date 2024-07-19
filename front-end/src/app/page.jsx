@@ -14,6 +14,9 @@ import GraficoPostura from "@/components/PostureChart";
 import GraficoAmbiente from "@/components/WorkplaceChart";
 import GraficoSaude from "@/components/HealthChart";
 import CorpoHumano from "@/components/CorpoHumano";
+import TablePosture from "@/components/TableSectorPosture"
+import HealthTable from "@/components/TableSectorHealth"
+import TabelaSatisfacao from "@/components/TableSectorSatisfaction"
 
 export default function Home() {
   const [responseData, setResponseData] = useState({});
@@ -158,10 +161,23 @@ export default function Home() {
             </div>
             <hr className="my-4 border-gray-700" />
             <div className=" w-full">
-              <TableSector sector={selectedSector} />
+              {selectedSector && chartType === "pain" && (
+                  <TableSector sector={selectedSector} />
+              )}
+              {selectedSector && chartType === "satisfaction" && (
+                <TabelaSatisfacao sector={selectedSector} />
+              )}
+              {selectedSector && chartType === "posture" && (
+                  <TablePosture sector={selectedSector} />
+              )}
+              {selectedSector && chartType === "health" && (
+                <HealthTable sector={selectedSector} />
+              )}
             </div>
             <div className=" w-1/2">
-              <CorpoHumano sector={selectedSector} />
+              {selectedSector && chartType === "pain" && (
+                  <CorpoHumano sector={selectedSector} />
+              )}
             </div>
           </div>
         </div>
