@@ -20,7 +20,10 @@ const GraficoSatisfacao = ({ sector }) => {
         setSatisfactionData(response.data);
         setLoading(false);
       } catch (error) {
-        console.error(`Erro na requisição de satisfação para o setor ${sector}:`, error);
+        console.error(
+          `Erro na requisição de satisfação para o setor ${sector}:`,
+          error
+        );
         setLoading(false);
       }
     };
@@ -64,12 +67,12 @@ const GraficoSatisfacao = ({ sector }) => {
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [As minhas condições de vida são excelentes]",
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Estou satisfeito com a minha vida]",
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Até o presente momento tenho alcançado as coisas importantes que quero para a minha vida]",
-    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Se pudesse viver a minha vida de novo não mudaria quase nada]"
+    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Se pudesse viver a minha vida de novo não mudaria quase nada]",
   ];
 
   const bodyPartNames = satisfaction_columns.map((column) => {
     const matches = column.match(/\[(.*?)\]/);
-    return matches ? matches[1] : ''; 
+    return matches ? matches[1] : "";
   });
 
   const legendItems = satisfaction_columns.map((column, index) => ({
@@ -78,55 +81,61 @@ const GraficoSatisfacao = ({ sector }) => {
   }));
 
   return (
-    <Stack direction="column" spacing={1} sx={{ width: "100%", height: "100%" }}>
-      <BarChart
-        tooltip={{ trigger: "item" }}
-        axisHighlight={{ x: "line", y: "band" }}
-        layout="horizontal"
-        yAxis={[{ scaleType: "band", data: bodyPartNames }]}
-        series={chartData.map((series) => ({
-          data: [
-            series.data1,
-            series.data2,
-            series.data3,
-            series.data4,
-            series.data5,
-            series.data6,
-            series.data7,
-          ],
-          name: series.name,
-        }))}
-        sx={{ height: "80%" }}
-        colors={[
-          "#000080",
-          "#1E90FF",
-          "#00FF7F",
-          "#EDC949",
-          "#E15759",
-          "#8B4513",
-        ]}
-        margin={{ right: 100, left: 150, top: 0, bottom: 25 }}
-        slotProps={{
-          legend: {
-            direction: "column",
-            position: { vertical: "middle", horizontal: "right" },
-            padding: 0,
-          },
-          xAxis: {
-            tickLabelProps: { fontSize: 12, fontFamily: "Roboto" },
-          },
-          yAxis: {
-            tickLabelProps: { fontSize: 12, fontFamily: "Roboto" },
-            orientation: "left",
-            margin: { left: 100 },
-          },
-          bar: {
-            barStyle: { borderRadius: 5 },
-          },
-        }}
-        legendItems={legendItems}
-      />
-    </Stack>
+    <div className=" h-[400px]">
+      <Stack
+        direction="column"
+        spacing={1}
+        sx={{ width: "100%", height: "100%" }}
+      >
+        <BarChart
+          tooltip={{ trigger: "item" }}
+          axisHighlight={{ x: "line", y: "band" }}
+          layout="horizontal"
+          yAxis={[{ scaleType: "band", data: bodyPartNames }]}
+          series={chartData.map((series) => ({
+            data: [
+              series.data1,
+              series.data2,
+              series.data3,
+              series.data4,
+              series.data5,
+              series.data6,
+              series.data7,
+            ],
+            name: series.name,
+          }))}
+          sx={{ height: "80%" }}
+          colors={[
+            "#000080",
+            "#1E90FF",
+            "#00FF7F",
+            "#EDC949",
+            "#E15759",
+            "#8B4513",
+          ]}
+          margin={{ right: 100, left: 150, top: 0, bottom: 25 }}
+          slotProps={{
+            legend: {
+              direction: "column",
+              position: { vertical: "middle", horizontal: "right" },
+              padding: 0,
+            },
+            xAxis: {
+              tickLabelProps: { fontSize: 12, fontFamily: "Roboto" },
+            },
+            yAxis: {
+              tickLabelProps: { fontSize: 12, fontFamily: "Roboto" },
+              orientation: "left",
+              margin: { left: 100 },
+            },
+            bar: {
+              barStyle: { borderRadius: 5 },
+            },
+          }}
+          legendItems={legendItems}
+        />
+      </Stack>
+    </div>
   );
 };
 
