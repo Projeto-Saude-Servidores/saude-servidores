@@ -376,6 +376,43 @@ const CorpoHumano = ({ sector }) => {
           </tspan>
         </text>
       </svg>
+      <div className="flex flex-row mt-2 mb-2">
+        <div className="flex items-center">
+          <div
+            className="w-4 h-4 mr-2"
+            style={{ backgroundColor: "#c0c0c0" }}
+          ></div>
+          <p>0-20%</p>
+        </div>
+        <div className="flex items-center">
+          <div
+            className="w-4 h-4 mr-2"
+            style={{ backgroundColor: "#ffa500" }}
+          ></div>
+          <p>20-40%</p>
+        </div>
+        <div className="flex items-center">
+          <div
+            className="w-4 h-4 mr-2"
+            style={{ backgroundColor: "#800080" }}
+          ></div>
+          <p>40-60%</p>
+        </div>
+        <div className="flex items-center">
+          <div
+            className="w-4 h-4 mr-2"
+            style={{ backgroundColor: "#000080" }}
+          ></div>
+          <p>60-80%</p>
+        </div>
+        <div className="flex items-center">
+          <div
+            className="w-4 h-4 mr-2"
+            style={{ backgroundColor: "#ff0000" }}
+          ></div>
+          <p>80-100%</p>
+        </div>
+      </div>
     </div>
   );
 };
