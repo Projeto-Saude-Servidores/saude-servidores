@@ -41,6 +41,15 @@ def get_csv_data():
 # Invertendo o dicionário para facilitar a busca
 abbreviation_to_department = {v: k for k, v in department_abbreviations.items()}
 
+# Mapeamento dos identificadores de faixa etária
+age_range_identifiers = {
+    "faixa1": "-29",
+    "faixa2": "30 - 34",
+    "faixa3": "35 - 39",
+    "faixa4": "40 - 49",
+    "faixa5": "50+"
+}
+
 # Definir as colunas relacionadas aos níveis de dor
 pain_columns = [
     "29. Nos últimos 12 meses, você sentiu alguma dor ou desconforto ? Indique a intensidade da dor (0 = nenhuma 5 = dor extrema) [Pescoço]",
@@ -102,97 +111,101 @@ def get_average_pain_by_sector():
 
 
 
-@app.route('/api/amostragem', methods=['GET'])
-def get_csv_amostragem():
-    response_counts = {}
-    
-    # quantidade de pessoas
-    response_counts["Pessoas"] = len(df)
-    
-    # calculando quantas pessoas de cada sexo tem
-    counts = df["2. Sexo:"].value_counts().to_dict()
-    response_counts["Gêneros"] = counts
-    
-    
+@app.route('/api/idades', methods=['GET'])
+def get_csv_idades():
     idades = df["1. Idade:"].dropna()
-    
+
     faixas_idade = {
-        "até 29 anos": 0,
-        "entre 30 e 39 anos": 0,
-        "entre 40 e 49 anos": 0,
-        "50 anos ou mais": 0
+        "-29": [],
+        "30 - 34": [],
+        "35 - 39": [],
+        "40 - 49": [],
+        "50+": []
     }
-    
+
     for idade in idades:
         if idade <= 29:
-            faixas_idade["até 29 anos"] += 1
-        elif 30 <= idade <= 39:
-            faixas_idade["entre 30 e 39 anos"] += 1
+            faixas_idade["-29"].append(idade)
+        elif 30 <= idade <= 34:
+            faixas_idade["30 - 34"].append(idade)
+        elif 35 <= idade <= 39:
+            faixas_idade["35 - 39"].append(idade)
         elif 40 <= idade <= 49:
-            faixas_idade["entre 40 e 49 anos"] += 1
+            faixas_idade["40 - 49"].append(idade)
         else:
-            faixas_idade["50 anos ou mais"] += 1
-            
-    response_counts["Idades"] = faixas_idade
-    
-    pesos = df["5. Qual o seu peso? Ex: 68 kg"].dropna()
-    
-    faixas_peso = {
-        "até 60 kg": 0,
-        "entre 61 e 75 kg": 0,
-        "entre 76 e 85 kg": 0,
-        "acima de 85 kg": 0
+            faixas_idade["50+"].append(idade)
+
+    media_dores_faixa_etaria = {
+        "-29": 0,
+        "30 - 34": 0,
+        "35 - 39": 0,
+        "40 - 49": 0,
+        "50+": 0
     }
-    
-    for peso in pesos:
-        if peso <= 60:
-            faixas_peso["até 60 kg"] += 1
-        elif 61 <= peso <= 75:
-            faixas_peso["entre 61 e 75 kg"] += 1
-        elif 76 <= peso <= 85:
-            faixas_peso["entre 76 e 85 kg"] += 1
-        else:
-            faixas_peso["acima de 85 kg"] += 1
-            
-    response_counts["Pesos"] = faixas_peso
-    
-    
-    # Calculando frequência de alturas por faixa
-    alturas = df["4. Qual a sua altura? Ex: 1,70m"].dropna()  # Remove valores NaN se houver(talvez não precise)
-    
-    # Definindo faixas de altura
-    faixas_altura = {
-        "menor que 165 cm": 0,
-        "entre 165 e 172 cm": 0,
-        "entre 173 e 179 cm": 0,
-        "maior que 179 cm": 0
-    }
-    
-    # Contagem de alturas por faixa
-    for altura in alturas:
-        if altura < 165:
-            faixas_altura["menor que 165 cm"] += 1
-        elif 165 <= altura <= 172:
-            faixas_altura["entre 165 e 172 cm"] += 1
-        elif 173 <= altura <= 179:
-            faixas_altura["entre 173 e 179 cm"] += 1
-        else:
-            faixas_altura["maior que 179 cm"] += 1
-    
-    response_counts["Alturas"] = faixas_altura
-        
-    # calculando quantas pessoas de cada setor tem
-    counts = df["7. Setor da Reitoria:"].value_counts().to_dict()
-    response_counts["Setores"] = counts
-    
-    # calculando quantas pessoas por cada regime de trabalho
-    counts = df["6. Qual o seu regime de trabalho?"].value_counts().to_dict()
-    response_counts["Regimes de trabalho"] = counts
-    
-    
-        
+
+    for faixa, idades in faixas_idade.items():
+        if idades:
+            dores_faixa = df[df["1. Idade:"].isin(idades)][pain_columns].mean(axis=1)
+            media_dores_faixa_etaria[faixa] = round(dores_faixa.mean(), 2)
+
     # Usar json.dumps para garantir que os caracteres não sejam escapados
-    response_json = json.dumps(response_counts, ensure_ascii=False)
+    response_json = json.dumps(media_dores_faixa_etaria, ensure_ascii=False)
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
+# Rota para obter os níveis de dor detalhados por faixa etária específica
+@app.route('/api/idades/<identifier>', methods=['GET'])
+def get_pain_levels_by_age_range(identifier):
+    # Verificar se o identificador fornecido é válido
+    if identifier not in age_range_identifiers:
+        return jsonify({"error": "Identificador de faixa etária não encontrado"}), 404
+
+    # Mapeamento do identificador para a faixa etária
+    faixa = age_range_identifiers[identifier]
+
+    # Definir os intervalos de faixa etária
+    age_ranges = {
+        "-29": (None, 29),
+        "30 - 34": (30, 34),
+        "35 - 39": (35, 39),
+        "40 - 49": (40, 49),
+        "50+": (50, None)
+    }
+
+    # Filtrar os dados pela faixa etária
+    min_age, max_age = age_ranges[faixa]
+    if min_age is None:
+        sector_data = df[df["1. Idade:"] <= max_age]
+    elif max_age is None:
+        sector_data = df[df["1. Idade:"] >= min_age]
+    else:
+        sector_data = df[(df["1. Idade:"] >= min_age) & (df["1. Idade:"] <= max_age)]
+
+    pain_data = sector_data[pain_columns]
+    
+    # Transformar df em dicionário
+    pain_dict = pain_data.to_dict(orient='list')
+
+    response_response = {"nível 0":[], "nível 1":[], "nível 2":[], "nível 3":[], "nível 4":[], "nível 5":[]}
+
+    # Renomear as chaves do dicionário para uma forma mais amigável
+    pain_dict = {
+        col.split(' [')[1].replace(']', ''):  pain_dict[col]       
+        for col in pain_dict
+    }
+
+    # Contar a quantidade de 0,1,2,3,4 e 5 e adicionar no response_response
+    for chave in pain_dict:
+        count = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0}
+        valores = pain_dict[chave]
+        for valor in valores:
+            if valor in count:
+                count[valor] += 1
+        for level, qtd in count.items():
+            response_response[f"nível {level}"].append({chave: qtd})
+
+    response_json = json.dumps(response_response, ensure_ascii=False)
+    
+    # Retornar a resposta JSON com o mime type application/json
     return Response(response_json, content_type="application/json; charset=utf-8")
 
 # Rota para obter os níveis de dor médios de um setor específico

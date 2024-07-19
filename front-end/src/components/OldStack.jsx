@@ -3,7 +3,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
 
-export default function SectorStack({ sector }) {
+export default function OldStack({ old }) {
   const [painData, setPainData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -11,12 +11,13 @@ export default function SectorStack({ sector }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:5000/api/setores/${sector}`
+          `http://127.0.0.1:5000/api/idades/${old}`
         );
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados");
         }
         const data = await response.json();
+        console.log("data old abaixo: ")
         console.log(data)
         setPainData(data);
         setLoading(false);
@@ -27,7 +28,7 @@ export default function SectorStack({ sector }) {
     };
 
     fetchData();
-  }, [sector]);
+  }, [old]);
 
   if (loading) {
     return (

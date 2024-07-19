@@ -30,7 +30,6 @@ function GraficoColunas({ data }) {
   console.log("dataset:", JSON.stringify(dataset, null, 2));
   console.log("colorMap:", JSON.stringify(colorMap, null, 2));
 
-  // Definição da legenda personalizada com espaçamento ajustado
   const customLegend = (
     <Stack
       direction="row"
@@ -41,7 +40,7 @@ function GraficoColunas({ data }) {
     >
       <Stack direction="row" spacing={0.5} alignItems="center">
         <div style={{ width: 20, height: 20, backgroundColor: "#76B7B2" }} />
-        <span>Bom</span>
+        <span>Baixo</span>
       </Stack>
       <Stack direction="row" spacing={0.5} alignItems="center">
         <div style={{ width: 20, height: 20, backgroundColor: "#EDC949" }} />
@@ -49,7 +48,7 @@ function GraficoColunas({ data }) {
       </Stack>
       <Stack direction="row" spacing={0.5} alignItems="center">
         <div style={{ width: 20, height: 20, backgroundColor: "#E15759" }} />
-        <span>Ruim</span>
+        <span>Alto</span>
       </Stack>
     </Stack>
   );
@@ -82,6 +81,7 @@ function GraficoColunas({ data }) {
                 colors: Object.values(colorMap),
               },
             },
+
           ]}
           yAxis={[]}
           borderRadius={10}
@@ -90,7 +90,7 @@ function GraficoColunas({ data }) {
             left: 30,
             right: 30,
             top: 30,
-            bottom: 35,
+            bottom: 55,
           }}
         />
       </Stack>

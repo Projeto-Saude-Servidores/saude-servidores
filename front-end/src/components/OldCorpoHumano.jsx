@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 
-const CorpoHumano = ({ sector }) => {
+const OldCorpoHumano = ({ old }) => {
   const cores = {
     cor1: "#c0c0c0", //cinza 0-20
     cor2: "#ffa500", //amarelo 20-40
@@ -19,7 +19,7 @@ const CorpoHumano = ({ sector }) => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:5000/api/setores/${sector}`
+          `http://127.0.0.1:5000/api/idades/${old}`
         );
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados");
@@ -35,7 +35,7 @@ const CorpoHumano = ({ sector }) => {
     };
 
     fetchData();
-  }, [sector]);
+  }, [old]);
 
   if (loading) {
     return <p>Carregando...</p>;
@@ -417,4 +417,4 @@ const CorpoHumano = ({ sector }) => {
   );
 };
 
-export default CorpoHumano;
+export default OldCorpoHumano;

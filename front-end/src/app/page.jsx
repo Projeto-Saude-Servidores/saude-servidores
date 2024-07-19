@@ -6,22 +6,28 @@ import NavBar from "@/components/NavBar";
 import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import OverviewData from "@/components/Overview";
 import SectorStack from "../components/SectorStack";
+import OldStack from "../components/OldStack";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import TableSector from "@/components/TableSector";
+import TableOld from "@/components/TableOld";
 import GraficoSatisfacao from "@/components/SatisfactionChart";
 import Sample from "@/components/Sample";
 import GraficoPostura from "@/components/PostureChart";
 import GraficoAmbiente from "@/components/WorkplaceChart";
 import GraficoSaude from "@/components/HealthChart";
 import CorpoHumano from "@/components/CorpoHumano";
+import OldCorpoHumano from "@/components/OldCorpoHumano";
 import TablePosture from "@/components/TableSectorPosture"
 import HealthTable from "@/components/TableSectorHealth"
 import TabelaSatisfacao from "@/components/TableSectorSatisfaction"
 
 export default function Home() {
-  const [responseData, setResponseData] = useState({});
+  const [responseDataSectors, setResponseDataSectors] = useState({});
+  const [responseDataOlds, setResponseDataOlds] = useState({});
   const [selectedSector, setSelectedSector] = useState("ADM");
+  const [selectedOld, setSelectedOld] = useState("faixa1");
   const [sectorData, setSectorData] = useState({});
+  const [oldData, setOldData] = useState({});
   const [chartType, setChartType] = useState("pain");
 
   useEffect(() => {
@@ -29,7 +35,17 @@ export default function Home() {
       .get("http://127.0.0.1:5000/api/setores")
       .then((response) => {
         const data = response.data;
-        setResponseData(data);
+        setResponseDataSectors(data);
+      })
+      .catch((error) => console.error("Erro na requisição:", error));
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:5000/api/idades")
+      .then((response) => {
+        const data = response.data;
+        setResponseDataOlds(data);
       })
       .catch((error) => console.error("Erro na requisição:", error));
   }, []);
@@ -39,6 +55,14 @@ export default function Home() {
     setSelectedSector(selectedSector);
     fetchSectorData(selectedSector);
   };
+
+  const handleOldChange = (event) => {
+    const selectedOld = event.target.value;
+    setSelectedOld(selectedOld);
+    fetchOldData(selectedOld);
+  };
+  
+  
 
   const handleChartTypeChange = (event) => {
     setChartType(event.target.value);
@@ -60,50 +84,24 @@ export default function Home() {
     }
   };
 
-  return (
-    <NavBar>
-      <div className="h-full flex flex-row gap-5 p-5 w-full items-center bg-gray-200">
-        <div className="flex flex-col gap-5 h-full w-1/2 justify-center items-center ">
-          <div className=" bg-white rounded-lg h-1/2 w-full pt-3 shadow-md flex flex-grow flex-col items-center">
-            <div className="w-full text-left items-start pl-4 pb-1 font-bold">
-              Nível de dores por departamento
-            </div>
-            <div className="rounded-md justify-center w-full h-full">
-              <GraficoColunas data={responseData} />
-            </div>
-          </div>
+  const fetchOldData = (old) => {
+    if (old) {
+      axios
+        .get(`http://127.0.0.1:5000/api/${chartType}/${old}`)
+        .then((response) => {
+          setOldData(response.data);
+        })
+        .catch((error) => {
+          console.error(`Erro na requisição para a faixa etária ${old}:`, error);
+          setOldData({});
+        });
+    } else {
+      setOldData({});
+    }
+  };
 
-          <div className="bg-white rounded-lg h-1/2 w-full shadow-md flex flex-col items-center">
-            <div className="flex flex-col w-full h-1/5 justify-between">
-              <div className="flex flex-row items-center w-full justify-between px-4 text-left pl-4 pb-1 font-bold mt-2">
-                Nível de dor específica por setor
-                <FormControl
-                  variant="outlined"
-                  className="ml-4"
-                  sx={{ minWidth: 120 }}
-                  size="small"
-                >
-                  <InputLabel>Setor</InputLabel>
-                  <Select
-                    value={selectedSector}
-                    onChange={handleSectorChange}
-                    label="Setor"
-                    MenuProps={{
-                      PaperProps: {
-                        style: {
-                          textAlign: "center",
-                        },
-                      },
-                    }}
-                  >
-                    {Object.keys(responseData).map((sector) => (
-                      <MenuItem key={sector} value={sector}>
-                        {sector}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <FormControl
+  const seletorGrafico = (
+    <FormControl
                   variant="outlined"
                   className="ml-4"
                   sx={{ minWidth: 120 }}
@@ -122,7 +120,8 @@ export default function Home() {
                       },
                     }}
                   >
-                    <MenuItem value="pain">Nível de Dores</MenuItem>
+                    <MenuItem value="pain">Dores por departamento</MenuItem>
+                    <MenuItem value="pain_old">Dores por faixa etária</MenuItem>
                     <MenuItem value="satisfaction">
                       Satisfação com a Vida
                     </MenuItem>
@@ -131,12 +130,117 @@ export default function Home() {
                     <MenuItem value="health">Saúde</MenuItem>
                   </Select>
                 </FormControl>
-              </div>
+  )
+
+  return (
+    <NavBar>
+      <div className="h-full flex flex-row gap-5 p-5 w-full items-center bg-gray-200">
+        <div className="flex flex-col gap-5 h-full w-1/2 justify-center items-center ">
+          <div className=" bg-white rounded-lg h-1/2 w-full pt-3 shadow-md flex flex-grow flex-col items-center">
+
+            
+            {selectedSector && chartType !== "pain_old" && (
+                <div className="w-full flex flex-row text-left justify-between items-start px-4 pb-1 mb-2 font-bold">
+                  Nível de dores por departamento
+                  {seletorGrafico}
+                </div>
+            )}
+            {selectedSector && chartType === "pain_old" && (
+                <div className="w-full flex flex-row text-left justify-between items-start px-4 pb-1 mb-2 font-bold">
+                  Nível de dores por faixa etária
+                  {seletorGrafico}
+                </div>
+            )}
+            
+
+            {selectedSector && chartType !== "pain_old" && (
+                <div className="rounded-md justify-center w-full h-full">
+                  <GraficoColunas data={responseDataSectors} />
+                </div>
+            )}
+            {selectedSector && chartType === "pain_old" && (
+                <div className="rounded-md justify-center w-full h-full">
+                  <GraficoColunas data={responseDataOlds} />
+                </div>
+            )}
+            
+          </div>
+
+          <div className="bg-white rounded-lg h-1/2 w-full shadow-md flex flex-col items-center">
+            <div className="flex flex-col w-full h-1/5 justify-between">
+
+              {selectedSector && chartType !== "pain_old" && (
+                  <div className="flex flex-row items-center w-full justify-between px-4 text-left pl-4 pb-1 font-bold mt-2">
+                  Nível de dor específica por setor
+                  <FormControl
+                    variant="outlined"
+                    className="ml-4"
+                    sx={{ minWidth: 120 }}
+                    size="small"
+                  >
+                    <InputLabel>Setor</InputLabel>
+                    <Select
+                      value={selectedSector}
+                      onChange={handleSectorChange}
+                      label="Setor"
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            textAlign: "center",
+                          },
+                        },
+                      }}
+                    >
+                      {Object.keys(responseDataSectors).map((sector) => (
+                        <MenuItem key={sector} value={sector}>
+                          {sector}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
+
+              {selectedSector && chartType === "pain_old" && (
+                  <div className="flex flex-row items-center w-full justify-between px-4 text-left pl-4 pb-1 font-bold mt-2">
+                  Nível de dor específica por faixa etária
+                  <FormControl
+                    variant="outlined"
+                    className="ml-4"
+                    sx={{ minWidth: 120 }}
+                    size="small"
+                  >
+                    <InputLabel>Faixa Etária</InputLabel>
+                    <Select
+                      value={selectedOld}
+                      onChange={handleOldChange}
+                      label="Faixa Etária"
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            textAlign: "center",
+                          },
+                        },
+                      }}
+                    >
+                      <MenuItem value="faixa1">29 anos ou menos</MenuItem>
+                      <MenuItem value="faixa2">30 - 34 anos</MenuItem>
+                      <MenuItem value="faixa3">35 - 39 anos</MenuItem>
+                      <MenuItem value="faixa4">40 - 49 anos</MenuItem>
+                      <MenuItem value="faixa5">50 anos ou mais</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
+              
             </div>
 
             <div className="justify-center w-full h-full">
               {selectedSector && chartType === "pain" && (
                 <SectorStack sector={selectedSector} />
+              )}
+              {selectedOld && chartType === "pain_old" && (
+                <OldStack old={selectedOld} />
               )}
               {selectedSector && chartType === "satisfaction" && (
                 <GraficoSatisfacao sector={selectedSector} />
@@ -164,6 +268,9 @@ export default function Home() {
               {selectedSector && chartType === "pain" && (
                   <TableSector sector={selectedSector} />
               )}
+              {selectedOld && chartType === "pain_old" && (
+                  <TableOld old={selectedOld} />
+              )}
               {selectedSector && chartType === "satisfaction" && (
                 <TabelaSatisfacao sector={selectedSector} />
               )}
@@ -177,6 +284,9 @@ export default function Home() {
             <div className=" w-1/2">
               {selectedSector && chartType === "pain" && (
                   <CorpoHumano sector={selectedSector} />
+              )}
+              {selectedOld && chartType === "pain_old" && (
+                  <OldCorpoHumano old={selectedOld} />
               )}
             </div>
           </div>
