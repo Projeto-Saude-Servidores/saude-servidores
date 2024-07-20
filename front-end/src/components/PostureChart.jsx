@@ -64,10 +64,21 @@ const GraficoPostura = ({ sector }) => {
     "28. A borda superior da tela do seu computador está na altura dos seus olhos?",
   ];
 
-  const chartData = posture_columns.map((column) => {
+  const abreviated_columns = [
+    "Altura da mesa",
+    "Apoio aos pés",
+    "Ajuste do assento",
+    "Cadeira com encosto",
+    "Apoio dos antebraços",
+    "Utiliza - Computador 1",
+    "Utiliza - Computador 2",
+    "Altura da borda da tela",
+  ];
+
+  const seriesData = posture_columns.map((column) => {
     const questionData = postureData[column] || {};
     return {
-      name: column,
+      question: column,
       Sim: questionData["Sim"] || 0,
       Nao: questionData["Não"] || 0,
       "Teclado integrado": questionData["Teclado integrado"] || 0,
@@ -77,30 +88,30 @@ const GraficoPostura = ({ sector }) => {
     };
   });
 
-  const seriesData = [
+  const series = [
     {
       name: "Sim",
-      data: chartData.map((item) => item.Sim),
+      data: seriesData.map((item) => item.Sim),
     },
     {
       name: "Não",
-      data: chartData.map((item) => item.Nao),
+      data: seriesData.map((item) => item.Nao),
     },
     {
       name: "Teclado integrado",
-      data: chartData.map((item) => item["Teclado integrado"]),
+      data: seriesData.map((item) => item["Teclado integrado"]),
     },
     {
       name: "Touchpad",
-      data: chartData.map((item) => item["Touchpad"]),
+      data: seriesData.map((item) => item["Touchpad"]),
     },
     {
       name: "Mouse",
-      data: chartData.map((item) => item["Mouse"]),
+      data: seriesData.map((item) => item["Mouse"]),
     },
     {
       name: "Teclado externo",
-      data: chartData.map((item) => item["Teclado externo"]),
+      data: seriesData.map((item) => item["Teclado externo"]),
     },
   ];
 
@@ -115,10 +126,11 @@ const GraficoPostura = ({ sector }) => {
           tooltip={{ trigger: "item" }}
           axisHighlight={{ x: "line", y: "band" }}
           layout="horizontal"
-          yAxis={[{ scaleType: "band", data: posture_columns }]}
-          series={seriesData.map((serie) => ({
+          yAxis={[{ scaleType: "band", data: abreviated_columns }]}
+          series={series.map((serie) => ({
             name: serie.name,
             data: serie.data,
+            stack: "A",
           }))}
           sx={{ height: "80%" }}
           colors={[

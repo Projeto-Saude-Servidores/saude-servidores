@@ -52,16 +52,6 @@ const GraficoSatisfacao = ({ sector }) => {
     return <div>Dados não encontrados ou formato inválido.</div>;
   }
 
-  const chartData = [];
-
-  Object.entries(satisfactionData).forEach(([question, counts]) => {
-    const seriesData = { name: question };
-    for (let i = 1; i <= 7; i++) {
-      seriesData[`data${i}`] = counts[i] || 0;
-    }
-    chartData.push(seriesData);
-  });
-
   const satisfaction_columns = [
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Em muitos campos a minha vida está próxima do meu ideal.]",
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [As minhas condições de vida são excelentes]",
@@ -70,18 +60,40 @@ const GraficoSatisfacao = ({ sector }) => {
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Se pudesse viver a minha vida de novo não mudaria quase nada]",
   ];
 
-  const bodyPartNames = satisfaction_columns.map((column) => {
-    const matches = column.match(/\[(.*?)\]/);
-    return matches ? matches[1] : "";
+  const abreviated_columns = [
+    "Vida próxima do ideal",
+    "Condições de vida",
+    "Satisfação com a vida",
+    "Alcançado objetivos",
+    "Mudaria algo na minha vida",
+  ];
+
+  const chartData = satisfaction_columns.map((column) => {
+    const questionData = satisfactionData[column] || {};
+    return {
+      name: column,
+      data1: questionData[1] || 0,
+      data2: questionData[2] || 0,
+      data3: questionData[3] || 0,
+      data4: questionData[4] || 0,
+      data5: questionData[5] || 0,
+      data6: questionData[6] || 0,
+      data7: questionData[7] || 0,
+    };
   });
 
-  const legendItems = satisfaction_columns.map((column, index) => ({
-    label: column,
-    color: chartData[index] ? chartData[index].color : undefined, // Associar cores se necessário
-  }));
+  const seriesData = [
+    { name: "1", data: chartData.map((item) => item.data1) },
+    { name: "2", data: chartData.map((item) => item.data2) },
+    { name: "3", data: chartData.map((item) => item.data3) },
+    { name: "4", data: chartData.map((item) => item.data4) },
+    { name: "5", data: chartData.map((item) => item.data5) },
+    { name: "6", data: chartData.map((item) => item.data6) },
+    { name: "7", data: chartData.map((item) => item.data7) },
+  ];
 
   return (
-    <div className=" h-[400px]">
+    <div className="h-[400px]">
       <Stack
         direction="column"
         spacing={1}
@@ -91,18 +103,11 @@ const GraficoSatisfacao = ({ sector }) => {
           tooltip={{ trigger: "item" }}
           axisHighlight={{ x: "line", y: "band" }}
           layout="horizontal"
-          yAxis={[{ scaleType: "band", data: bodyPartNames }]}
-          series={chartData.map((series) => ({
-            data: [
-              series.data1,
-              series.data2,
-              series.data3,
-              series.data4,
-              series.data5,
-              series.data6,
-              series.data7,
-            ],
-            name: series.name,
+          yAxis={[{ scaleType: "band", data: abreviated_columns }]}
+          series={seriesData.map((serie) => ({
+            name: serie.name,
+            data: serie.data,
+            stack: "A",
           }))}
           sx={{ height: "80%" }}
           colors={[
@@ -132,7 +137,6 @@ const GraficoSatisfacao = ({ sector }) => {
               barStyle: { borderRadius: 5 },
             },
           }}
-          legendItems={legendItems}
         />
       </Stack>
     </div>

@@ -1,4 +1,3 @@
-// components/GraficoAmbiente.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -66,12 +65,24 @@ const GraficoAmbiente = ({ sector }) => {
     "20. A iluminação incomoda na realização do seu trabalho?",
   ];
 
+  const abreviated_columns = [
+    "Relacionamento-colegas",
+    "Relacionamento-chefe",
+    "Trabalho monótono",
+    "Estresse no trabalho",
+    "Exige esforço mental",
+    "Sabe sobre ergonomia",
+    "Ruído no trabalho",
+    "Temperatura do trabalho",
+    "Iluminação atrapalha",
+  ];
+
   const chartData = workplace_columns.map((column) => {
     const questionData = workplaceData[column] || {};
     return {
       name: column,
       Sim: questionData["Sim"] || 0,
-      Nao: questionData["Não"] || 0,
+      Não: questionData["Não"] || 0,
       Bom: questionData["Bom"] || 0,
       Ótimo: questionData["Ótimo"] || 0,
       Razoável: questionData["Razoável"] || 0,
@@ -83,7 +94,7 @@ const GraficoAmbiente = ({ sector }) => {
 
   const seriesData = [
     { name: "Sim", data: chartData.map((item) => item.Sim) },
-    { name: "Não", data: chartData.map((item) => item.Nao) },
+    { name: "Não", data: chartData.map((item) => item.Não) },
     { name: "Bom", data: chartData.map((item) => item.Bom) },
     { name: "Ótimo", data: chartData.map((item) => item.Ótimo) },
     { name: "Razoável", data: chartData.map((item) => item.Razoável) },
@@ -93,7 +104,7 @@ const GraficoAmbiente = ({ sector }) => {
   ];
 
   return (
-    <div className=" h-[400px]">
+    <div className="h-[400px]">
       <Stack
         direction="column"
         spacing={1}
@@ -103,10 +114,11 @@ const GraficoAmbiente = ({ sector }) => {
           tooltip={{ trigger: "item" }}
           axisHighlight={{ x: "line", y: "band" }}
           layout="horizontal"
-          yAxis={[{ scaleType: "band", data: workplace_columns }]}
+          yAxis={[{ scaleType: "band", data: abreviated_columns }]}
           series={seriesData.map((serie) => ({
             name: serie.name,
             data: serie.data,
+            stack: "A",
           }))}
           sx={{ height: "80%" }}
           colors={[

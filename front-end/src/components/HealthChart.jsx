@@ -59,6 +59,12 @@ const GraficoSaude = ({ sector }) => {
     "11. Tem alguma deficiência, se sim qual(ais)",
   ];
 
+  const abreviated_columns = [
+    "Atividade física regular",
+    "Problemas de saúde",
+    "Deficiência",
+  ];
+
   const chartData = health_columns.map((column) => {
     const questionData = healthData[column] || {};
     return {
@@ -90,7 +96,7 @@ const GraficoSaude = ({ sector }) => {
   ];
 
   return (
-    <div className=" h-[400px]">
+    <div className="h-[400px]">
       <Stack
         direction="column"
         spacing={1}
@@ -100,10 +106,11 @@ const GraficoSaude = ({ sector }) => {
           tooltip={{ trigger: "item" }}
           axisHighlight={{ x: "line", y: "band" }}
           layout="horizontal"
-          yAxis={[{ scaleType: "band", data: health_columns }]}
+          yAxis={[{ scaleType: "band", data: abreviated_columns }]}
           series={seriesData.map((serie) => ({
             name: serie.name,
             data: serie.data,
+            stack: "A",
           }))}
           sx={{ height: "80%" }}
           colors={[

@@ -17,9 +17,10 @@ import GraficoAmbiente from "@/components/WorkplaceChart";
 import GraficoSaude from "@/components/HealthChart";
 import CorpoHumano from "@/components/CorpoHumano";
 import OldCorpoHumano from "@/components/OldCorpoHumano";
-import TablePosture from "@/components/TableSectorPosture"
-import HealthTable from "@/components/TableSectorHealth"
-import TabelaSatisfacao from "@/components/TableSectorSatisfaction"
+import TablePosture from "@/components/TableSectorPosture";
+import HealthTable from "@/components/TableSectorHealth";
+import TabelaSatisfacao from "@/components/TableSectorSatisfaction";
+import WorkplaceTable from "@/components/TableSectorWorkplace";
 
 export default function Home() {
   const [responseDataSectors, setResponseDataSectors] = useState({});
@@ -254,6 +255,7 @@ export default function Home() {
               {selectedSector && chartType === "health" && (
                 <GraficoSaude sector={selectedSector} />
               )}
+              
             </div>
           </div>
         </div>
@@ -276,6 +278,9 @@ export default function Home() {
               )}
               {selectedSector && chartType === "posture" && (
                   <TablePosture sector={selectedSector} />
+              )}
+              {selectedSector && chartType === "workplace" && (
+                <WorkplaceTable sector={selectedSector} />
               )}
               {selectedSector && chartType === "health" && (
                 <HealthTable sector={selectedSector} />
