@@ -16,10 +16,10 @@ department_abbreviations = {
     "Departamento de Comunicação": "COM",
     "Departamento de Ensino": "ENS",
     "Departamento de Finanças": "FIN",
-    "Departamento de Infraestrutura": "INF",
-    "Departamento de Pesquisa": "PES",
+    "Departamento de Infraestrutura": "INFR",
+    "Departamento de Pesquisa": "PESQ",
     "Departamento de Recursos Humanos": "RH",
-    "Departamento de Tecnologia": "TEC",
+    "Departamento de Tecnologia": "TECN",
     "Gabinete do (a) Reitor(a), eu": "GAB"
 }
 
@@ -102,6 +102,24 @@ def get_average_pain_by_sector():
     
     # Arredondar os valores para 2 casas decimais
     sector_average_pain_dict = sector_average_pain.set_index('7. Setor da Reitoria:')['Average Pain Level'].round(2).to_dict()
+    
+    # Usar json.dumps para garantir que os caracteres não sejam escapados
+    response_json = json.dumps(sector_average_pain_dict, ensure_ascii=False)
+    
+    # Retornar a resposta JSON com o mime type application/json
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
+@app.route('/api/generos', methods=['GET'])
+def get_average_pain_by_gender():
+    # Calcular o nível médio de dor para cada pessoa
+    df['Average Pain Level'] = df[pain_columns].mean(axis=1)
+    
+    # Calcular o nível médio de dor por setor e aplicar as abreviações definidas manualmente
+    sector_average_pain = df.groupby('2. Sexo:')['Average Pain Level'].mean().reset_index()
+    sector_average_pain['2. Sexo:'] = sector_average_pain['2. Sexo:']
+    
+    # Arredondar os valores para 2 casas decimais
+    sector_average_pain_dict = sector_average_pain.set_index('2. Sexo:')['Average Pain Level'].round(2).to_dict()
     
     # Usar json.dumps para garantir que os caracteres não sejam escapados
     response_json = json.dumps(sector_average_pain_dict, ensure_ascii=False)
@@ -207,6 +225,62 @@ def get_pain_levels_by_age_range(identifier):
     
     # Retornar a resposta JSON com o mime type application/json
     return Response(response_json, content_type="application/json; charset=utf-8")
+
+@app.route('/api/generos/<genero>', methods=['GET'])
+def get_pain_levels_by_genre(genero):
+    # Filtrar os dados pelo gênero fornecido
+    genre_data = df[df['2. Sexo:'] == genero]
+
+    if genre_data.empty:
+        return jsonify({"error": "Gênero não encontrado"}), 404
+
+    pain_genre = genre_data[pain_columns]
+
+    # Transformar df em dicionário
+    genre_dict = pain_genre.to_dict(orient='list')
+
+    response_response = {"nível 0": [], "nível 1": [], "nível 2": [], "nível 3": [], "nível 4": [], "nível 5": []}
+
+    # Renomear as chaves do dicionário para uma forma mais amigável
+    genre_dict = {
+        col.split(' [')[1].replace(']', ''): genre_dict[col]
+        for col in genre_dict
+    }
+
+    # Contando quantidade de 0,1,2,3,4 e 5 e adicionar no response_response
+    for chave in genre_dict:
+        qtd0 = 0
+        qtd1 = 0
+        qtd2 = 0
+        qtd3 = 0
+        qtd4 = 0
+        qtd5 = 0
+        valores = genre_dict[chave]
+        for valor in valores:
+            if valor == 0:
+                qtd0 += 1
+            elif valor == 1:
+                qtd1 += 1
+            elif valor == 2:
+                qtd2 += 1
+            elif valor == 3:
+                qtd3 += 1
+            elif valor == 4:
+                qtd4 += 1
+            elif valor == 5:
+                qtd5 += 1
+        response_response["nível 0"].append({chave: qtd0})
+        response_response["nível 1"].append({chave: qtd1})
+        response_response["nível 2"].append({chave: qtd2})
+        response_response["nível 3"].append({chave: qtd3})
+        response_response["nível 4"].append({chave: qtd4})
+        response_response["nível 5"].append({chave: qtd5})
+
+    response_json = json.dumps(response_response, ensure_ascii=False)
+
+    # Retornar a resposta JSON com o mime type application/json
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
 
 # Rota para obter os níveis de dor médios de um setor específico
 @app.route('/api/setores/<abbreviation>', methods=['GET'])

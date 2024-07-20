@@ -7,9 +7,11 @@ import ManageSearchIcon from "@mui/icons-material/ManageSearch";
 import OverviewData from "@/components/Overview";
 import SectorStack from "../components/SectorStack";
 import OldStack from "../components/OldStack";
+import GenderStack from "../components/GenderStack";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 import TableSector from "@/components/TableSector";
 import TableOld from "@/components/TableOld";
+import TableGender from "@/components/TableGender";
 import GraficoSatisfacao from "@/components/SatisfactionChart";
 import Sample from "@/components/Sample";
 import GraficoPostura from "@/components/PostureChart";
@@ -17,6 +19,7 @@ import GraficoAmbiente from "@/components/WorkplaceChart";
 import GraficoSaude from "@/components/HealthChart";
 import CorpoHumano from "@/components/CorpoHumano";
 import OldCorpoHumano from "@/components/OldCorpoHumano";
+import GenderCorpoHumano from "@/components/GenderCorpoHumano";
 import TablePosture from "@/components/TableSectorPosture";
 import HealthTable from "@/components/TableSectorHealth";
 import TabelaSatisfacao from "@/components/TableSectorSatisfaction";
@@ -25,10 +28,13 @@ import WorkplaceTable from "@/components/TableSectorWorkplace";
 export default function Home() {
   const [responseDataSectors, setResponseDataSectors] = useState({});
   const [responseDataOlds, setResponseDataOlds] = useState({});
+  const [responseDataGenders, setResponseDataGenders] = useState({});
   const [selectedSector, setSelectedSector] = useState("ADM");
   const [selectedOld, setSelectedOld] = useState("faixa1");
+  const [selectedGender, setSelectedGender] = useState("Masculino");
   const [sectorData, setSectorData] = useState({});
   const [oldData, setOldData] = useState({});
+  const [genderData, setGenderData] = useState({});
   const [chartType, setChartType] = useState("pain");
 
   useEffect(() => {
@@ -50,6 +56,15 @@ export default function Home() {
       })
       .catch((error) => console.error("Erro na requisição:", error));
   }, []);
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:5000/api/generos")
+      .then((response) => {
+        const data = response.data;
+        setResponseDataGenders(data);
+      })
+      .catch((error) => console.error("Erro na requisição:", error));
+  }, []);
 
   const handleSectorChange = (event) => {
     const selectedSector = event.target.value;
@@ -61,6 +76,12 @@ export default function Home() {
     const selectedOld = event.target.value;
     setSelectedOld(selectedOld);
     fetchOldData(selectedOld);
+  };
+
+  const handleGenderChange = (event) => {
+    const selectedGender = event.target.value;
+    setSelectedGender(selectedGender);
+    fetchGenderData(selectedGender);
   };
   
   
@@ -100,6 +121,21 @@ export default function Home() {
       setOldData({});
     }
   };
+  const fetchGenderData = (gender) => {
+    if (gender) {
+      axios
+        .get(`http://127.0.0.1:5000/api/${chartType}/${gender}`)
+        .then((response) => {
+          setGenderData(response.data);
+        })
+        .catch((error) => {
+          console.error(`Erro na requisição para o gênero ${gender}:`, error);
+          setGenderData({});
+        });
+    } else {
+      setGenderData({});
+    }
+  };
 
   const seletorGrafico = (
     <FormControl
@@ -123,6 +159,7 @@ export default function Home() {
                   >
                     <MenuItem value="pain">Dores por departamento</MenuItem>
                     <MenuItem value="pain_old">Dores por faixa etária</MenuItem>
+                    <MenuItem value="pain_gender">Dores por gênero</MenuItem>
                     <MenuItem value="satisfaction">
                       Satisfação com a Vida
                     </MenuItem>
@@ -140,21 +177,27 @@ export default function Home() {
           <div className=" bg-white rounded-lg h-1/2 w-full pt-3 shadow-md flex flex-grow flex-col items-center">
 
             
-            {selectedSector && chartType !== "pain_old" && (
+            {selectedSector && chartType !== "pain_old" && chartType !== "pain_gender" && (
                 <div className="w-full flex flex-row text-left justify-between items-start px-4 pb-1 mb-2 font-bold">
-                  Nível de dores por departamento
+                  Nível médio de dores relacionado a departamentos
                   {seletorGrafico}
                 </div>
             )}
             {selectedSector && chartType === "pain_old" && (
                 <div className="w-full flex flex-row text-left justify-between items-start px-4 pb-1 mb-2 font-bold">
-                  Nível de dores por faixa etária
+                  Nível médio de dores relacionado a faixas etárias
+                  {seletorGrafico}
+                </div>
+            )}
+            {selectedSector && chartType === "pain_gender" && (
+                <div className="w-full flex flex-row text-left justify-between items-start px-4 pb-1 mb-2 font-bold">
+                  Nível médio de dores relacionado a gêneros
                   {seletorGrafico}
                 </div>
             )}
             
 
-            {selectedSector && chartType !== "pain_old" && (
+            {selectedSector && chartType !== "pain_old" && chartType !== "pain_gender" &&(
                 <div className="rounded-md justify-center w-full h-full">
                   <GraficoColunas data={responseDataSectors} />
                 </div>
@@ -164,13 +207,18 @@ export default function Home() {
                   <GraficoColunas data={responseDataOlds} />
                 </div>
             )}
+            {selectedSector && chartType === "pain_gender" && (
+                <div className="rounded-md justify-center w-full h-full">
+                  <GraficoColunas data={responseDataGenders} />
+                </div>
+            )}
             
           </div>
 
           <div className="bg-white rounded-lg h-1/2 w-full shadow-md flex flex-col items-center">
             <div className="flex flex-col w-full h-1/5 justify-between">
 
-              {selectedSector && chartType !== "pain_old" && (
+              {selectedSector && chartType !== "pain_old" && chartType !== "pain_gender" &&(
                   <div className="flex flex-row items-center w-full justify-between px-4 text-left pl-4 pb-1 font-bold mt-2">
                   Nível de dor específica por setor
                   <FormControl
@@ -233,6 +281,35 @@ export default function Home() {
                   </FormControl>
                 </div>
               )}
+              {selectedSector && chartType === "pain_gender" && (
+                  <div className="flex flex-row items-center w-full justify-between px-4 text-left pl-4 pb-1 font-bold mt-2">
+                  Nível de dor específica por gênero
+                  <FormControl
+                    variant="outlined"
+                    className="ml-4"
+                    sx={{ minWidth: 120 }}
+                    size="small"
+                  >
+                    <InputLabel>Gênero</InputLabel>
+                    <Select
+                      value={selectedGender}
+                      onChange={handleGenderChange}
+                      label="Gênero"
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            textAlign: "center",
+                          },
+                        },
+                      }}
+                    >
+                      <MenuItem value="Masculino">Masculino</MenuItem>
+                      <MenuItem value="Feminino">Feminino</MenuItem>
+
+                    </Select>
+                  </FormControl>
+                </div>
+              )}
               
             </div>
 
@@ -242,6 +319,9 @@ export default function Home() {
               )}
               {selectedOld && chartType === "pain_old" && (
                 <OldStack old={selectedOld} />
+              )}
+              {selectedGender && chartType === "pain_gender" && (
+                <GenderStack gender={selectedGender} />
               )}
               {selectedSector && chartType === "satisfaction" && (
                 <GraficoSatisfacao sector={selectedSector} />
@@ -273,6 +353,9 @@ export default function Home() {
               {selectedOld && chartType === "pain_old" && (
                   <TableOld old={selectedOld} />
               )}
+              {selectedGender && chartType === "pain_gender" && (
+                  <TableGender gender={selectedGender} />
+              )}
               {selectedSector && chartType === "satisfaction" && (
                 <TabelaSatisfacao sector={selectedSector} />
               )}
@@ -292,6 +375,9 @@ export default function Home() {
               )}
               {selectedOld && chartType === "pain_old" && (
                   <OldCorpoHumano old={selectedOld} />
+              )}
+              {selectedGender && chartType === "pain_gender" && (
+                  <GenderCorpoHumano gender={selectedGender} />
               )}
             </div>
           </div>

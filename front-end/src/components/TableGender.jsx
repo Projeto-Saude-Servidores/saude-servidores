@@ -35,7 +35,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function TableSector({ sector }) {
+export default function TableGender({ gender }) {
   const [painData, setPainData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [chartType, setChartType] = useState("nivel-0");
@@ -44,7 +44,7 @@ export default function TableSector({ sector }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:5000/api/setores/${sector}`
+          `http://127.0.0.1:5000/api/generos/${gender}`
         );
         if (!response.ok) {
           throw new Error("Erro ao buscar os dados");
@@ -60,7 +60,7 @@ export default function TableSector({ sector }) {
     };
 
     fetchData();
-  }, [sector]);
+  }, [gender]);
 
   if (loading) {
     return <p>Carregando...</p>;

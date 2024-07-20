@@ -116,11 +116,11 @@ export default function TableOld({ old }) {
           sx={{ minWidth: 120 }}
           size="small"
         >
-          <InputLabel>% do Nível</InputLabel>
+          <InputLabel>Nível de dor</InputLabel>
           <Select
             value={chartType}
             onChange={handleChartTypeChange}
-            label="Nível"
+            label="Nível de dor"
             MenuProps={{
               PaperProps: {
                 style: {
@@ -129,12 +129,12 @@ export default function TableOld({ old }) {
               },
             }}
           >
-            <MenuItem value="nivel-0">nivel-0</MenuItem>
-            <MenuItem value="nivel-1">nivel-1</MenuItem>
-            <MenuItem value="nivel-2">nivel-2</MenuItem>
-            <MenuItem value="nivel-3">nivel-3</MenuItem>
-            <MenuItem value="nivel-4">nivel-4</MenuItem>
-            <MenuItem value="nivel-5">nivel-5</MenuItem>
+            <MenuItem value="nivel-0">nivel 0</MenuItem>
+            <MenuItem value="nivel-1">nivel 1</MenuItem>
+            <MenuItem value="nivel-2">nivel 2</MenuItem>
+            <MenuItem value="nivel-3">nivel 3</MenuItem>
+            <MenuItem value="nivel-4">nivel 4</MenuItem>
+            <MenuItem value="nivel-5">nivel 5</MenuItem>
           </Select>
         </FormControl>
       </section>
