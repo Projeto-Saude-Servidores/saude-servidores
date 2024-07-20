@@ -38,7 +38,7 @@ export default function NavBar({ children }) {
       ></header>
       <div
         // branco ficou estranho, mas pode alterar aqui a cor da barra lateral
-        className={` mt-[50px] fixed  top-0 left-0 w-[15%] bg-white border-black text-blue-500 h-full transform ${
+        className={` mt-[50px]  fixed  top-0 left-0 w-[15%] bg-white border-black text-blue-500 h-full transform ${
           open ? "translate-x-0 " : " -translate-x-full"
         } transition-transform duration-700`}
       >
@@ -57,7 +57,7 @@ export default function NavBar({ children }) {
       </div>
       <main
         className={`flex-grow ml h-full w-full border-2 px-0  bg-gray-300 ${
-          open ? "ml-[210px] bg-gray-300" : "  bg-gray-300 h-full w-full px-0"
+          open ? "ml-[15%] bg-gray-300" : "  bg-gray-300 h-full w-full px-0"
         }`}
       >
         {children}
