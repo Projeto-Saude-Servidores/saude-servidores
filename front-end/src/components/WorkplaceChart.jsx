@@ -77,31 +77,14 @@ const GraficoAmbiente = ({ sector }) => {
     "Iluminação atrapalha",
   ];
 
-  const chartData = workplace_columns.map((column) => {
-    const questionData = workplaceData[column] || {};
-    return {
-      name: column,
-      Sim: questionData["Sim"] || 0,
-      Não: questionData["Não"] || 0,
-      Bom: questionData["Bom"] || 0,
-      Ótimo: questionData["Ótimo"] || 0,
-      Razoável: questionData["Razoável"] || 0,
-      Alto: questionData["Alto"] || 0,
-      Baixo: questionData["Baixo"] || 0,
-      Médio: questionData["Médio"] || 0,
-    };
-  });
-
-  const seriesData = [
-    { name: "Sim", data: chartData.map((item) => item.Sim) },
-    { name: "Não", data: chartData.map((item) => item.Não) },
-    { name: "Bom", data: chartData.map((item) => item.Bom) },
-    { name: "Ótimo", data: chartData.map((item) => item.Ótimo) },
-    { name: "Razoável", data: chartData.map((item) => item.Razoável) },
-    { name: "Alto", data: chartData.map((item) => item.Alto) },
-    { name: "Baixo", data: chartData.map((item) => item.Baixo) },
-    { name: "Médio", data: chartData.map((item) => item.Médio) },
+  const seriesLabels = [
+    "Sim", "Não", "Bom", "Ótimo", "Razoável", "Alto", "Baixo", "Médio"
   ];
+
+  const seriesData = seriesLabels.map(label => ({
+    name: label,
+    data: workplace_columns.map(column => workplaceData[column]?.[label] || 0)
+  }));
 
   return (
     <div className="h-[400px]">
@@ -119,6 +102,7 @@ const GraficoAmbiente = ({ sector }) => {
             name: serie.name,
             data: serie.data,
             stack: "A",
+            label: serie.name,
           }))}
           sx={{ height: "80%" }}
           colors={[
@@ -128,8 +112,11 @@ const GraficoAmbiente = ({ sector }) => {
             "#EDC949",
             "#E15759",
             "#8B4513",
+            "#FF6347",
+            "#4682B4",
+            "#32CD32",
           ]}
-          margin={{ right: 100, left: 150, top: 0, bottom: 25 }}
+          margin={{ right: 200, left: 150, top: 0, bottom: 25 }}
           slotProps={{
             legend: {
               direction: "column",

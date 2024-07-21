@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { BarChart } from "@mui/x-charts/BarChart";
 import CircularProgress from "@mui/material/CircularProgress";
 import Stack from "@mui/material/Stack";
-import { BarChart } from "@mui/x-charts/BarChart";
 
 const GraficoSaude = ({ sector }) => {
-  const [healthData, setHealthData] = useState({});
+  const [healthData, setHealthData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,10 +21,7 @@ const GraficoSaude = ({ sector }) => {
         setHealthData(response.data);
         setLoading(false);
       } catch (error) {
-        console.error(
-          `Erro na requisição de saúde para o setor ${sector}:`,
-          error
-        );
+        console.error(`Erro na requisição de saúde para o setor ${sector}:`, error);
         setLoading(false);
       }
     };
@@ -49,7 +46,7 @@ const GraficoSaude = ({ sector }) => {
     );
   }
 
-  if (!healthData || Object.keys(healthData).length === 0) {
+  if (!healthData) {
     return <div>Dados não encontrados ou formato inválido.</div>;
   }
 
@@ -65,35 +62,14 @@ const GraficoSaude = ({ sector }) => {
     "Deficiência",
   ];
 
-  const chartData = health_columns.map((column) => {
-    const questionData = healthData[column] || {};
-    return {
-      name: column,
-      Visual: questionData["Visual"] || 0,
-      Nenhuma: questionData["Nenhuma"] || 0,
-      Auditiva: questionData["Auditiva"] || 0,
-      Sim: questionData["Sim"] || 0,
-      Não: questionData["Não"] || 0,
-      diabetes: questionData["diabetes"] || 0,
-      asma: questionData["asma"] || 0,
-      nenhum: questionData["nenhum"] || 0,
-      hipertensão: questionData["hipertensão"] || 0,
-      Médio: questionData["Médio"] || 0,
-    };
-  });
-
-  const seriesData = [
-    { name: "Visual", data: chartData.map((item) => item.Visual) },
-    { name: "Nenhuma", data: chartData.map((item) => item.Nenhuma) },
-    { name: "Auditiva", data: chartData.map((item) => item.Auditiva) },
-    { name: "Sim", data: chartData.map((item) => item.Sim) },
-    { name: "Não", data: chartData.map((item) => item.Não) },
-    { name: "diabetes", data: chartData.map((item) => item.diabetes) },
-    { name: "asma", data: chartData.map((item) => item.asma) },
-    { name: "nenhum", data: chartData.map((item) => item.nenhum) },
-    { name: "hipertensão", data: chartData.map((item) => item.hipertensão) },
-    { name: "Médio", data: chartData.map((item) => item.Médio) },
+  const seriesLabels = [
+    "Visual", "Nenhuma", "Auditiva", "Sim", "Não", "diabetes", "asma", "nenhum", "hipertensão", "Médio"
   ];
+
+  const seriesData = seriesLabels.map(label => ({
+    name: label,
+    data: health_columns.map(column => healthData[column]?.[label] || 0)
+  }));
 
   return (
     <div className="h-[400px]">
@@ -107,10 +83,11 @@ const GraficoSaude = ({ sector }) => {
           axisHighlight={{ x: "line", y: "band" }}
           layout="horizontal"
           yAxis={[{ scaleType: "band", data: abreviated_columns }]}
-          series={seriesData.map((serie) => ({
+          series={seriesData.map(serie => ({
             name: serie.name,
             data: serie.data,
             stack: "A",
+            label: serie.name,
           }))}
           sx={{ height: "80%" }}
           colors={[
@@ -120,8 +97,12 @@ const GraficoSaude = ({ sector }) => {
             "#EDC949",
             "#E15759",
             "#8B4513",
+            "#FF6347",
+            "#4682B4",
+            "#32CD32",
+            "#6A5ACD", 
           ]}
-          margin={{ right: 100, left: 150, top: 0, bottom: 25 }}
+          margin={{ right: 200, left: 150, top: 0, bottom: 25 }}
           slotProps={{
             legend: {
               direction: "column",

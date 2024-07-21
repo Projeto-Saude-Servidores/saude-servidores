@@ -75,45 +75,14 @@ const GraficoPostura = ({ sector }) => {
     "Altura da borda da tela",
   ];
 
-  const seriesData = posture_columns.map((column) => {
-    const questionData = postureData[column] || {};
-    return {
-      question: column,
-      Sim: questionData["Sim"] || 0,
-      Nao: questionData["Não"] || 0,
-      "Teclado integrado": questionData["Teclado integrado"] || 0,
-      Touchpad: questionData["Touchpad"] || 0,
-      Mouse: questionData["Mouse"] || 0,
-      "Teclado externo": questionData["Teclado externo"] || 0,
-    };
-  });
-
-  const series = [
-    {
-      name: "Sim",
-      data: seriesData.map((item) => item.Sim),
-    },
-    {
-      name: "Não",
-      data: seriesData.map((item) => item.Nao),
-    },
-    {
-      name: "Teclado integrado",
-      data: seriesData.map((item) => item["Teclado integrado"]),
-    },
-    {
-      name: "Touchpad",
-      data: seriesData.map((item) => item["Touchpad"]),
-    },
-    {
-      name: "Mouse",
-      data: seriesData.map((item) => item["Mouse"]),
-    },
-    {
-      name: "Teclado externo",
-      data: seriesData.map((item) => item["Teclado externo"]),
-    },
+   const seriesLabels = [
+    "Sim", "Não", "Teclado integrado", "Touchpad", "Mouse", "Teclado externo", "Baixo", "Médio"
   ];
+
+  const seriesData = seriesLabels.map(label => ({
+    name: label,
+    data: posture_columns.map(column => postureData[column]?.[label] || 0)
+  }));
 
   return (
     <div className=" h-[400px]">
@@ -127,10 +96,11 @@ const GraficoPostura = ({ sector }) => {
           axisHighlight={{ x: "line", y: "band" }}
           layout="horizontal"
           yAxis={[{ scaleType: "band", data: abreviated_columns }]}
-          series={series.map((serie) => ({
+          series={seriesData.map((serie) => ({
             name: serie.name,
             data: serie.data,
             stack: "A",
+            label: serie.name,
           }))}
           sx={{ height: "80%" }}
           colors={[
@@ -140,8 +110,10 @@ const GraficoPostura = ({ sector }) => {
             "#EDC949",
             "#E15759",
             "#8B4513",
+            "#FF6347",
+            "#4682B4",
           ]}
-          margin={{ right: 100, left: 150, top: 0, bottom: 25 }}
+          margin={{ right: 200, left: 150, top: 0, bottom: 25 }}
           slotProps={{
             legend: {
               direction: "column",

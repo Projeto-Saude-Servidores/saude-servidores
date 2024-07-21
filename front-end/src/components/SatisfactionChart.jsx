@@ -56,7 +56,7 @@ const GraficoSatisfacao = ({ sector }) => {
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Em muitos campos a minha vida está próxima do meu ideal.]",
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [As minhas condições de vida são excelentes]",
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Estou satisfeito com a minha vida]",
-    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Até o presente momento tenho alcançado as coisas importantes que quero para a minha vida]",
+    "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Até o presente momento tenho alcançado as coisas importantes que quero para aminha vida]",
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Se pudesse viver a minha vida de novo não mudaria quase nada]",
   ];
 
@@ -69,6 +69,8 @@ const GraficoSatisfacao = ({ sector }) => {
   ];
 
   const chartData = satisfaction_columns.map((column) => {
+    console.log(column);
+    console.log(satisfactionData[column]);
     const questionData = satisfactionData[column] || {};
     return {
       name: column,
@@ -108,6 +110,7 @@ const GraficoSatisfacao = ({ sector }) => {
             name: serie.name,
             data: serie.data,
             stack: "A",
+            label: serie.name,
           }))}
           sx={{ height: "80%" }}
           colors={[
@@ -117,8 +120,9 @@ const GraficoSatisfacao = ({ sector }) => {
             "#EDC949",
             "#E15759",
             "#8B4513",
+            "#32CD32",
           ]}
-          margin={{ right: 100, left: 150, top: 0, bottom: 25 }}
+          margin={{ right: 200, left: 150, top: 0, bottom: 25 }}
           slotProps={{
             legend: {
               direction: "column",
