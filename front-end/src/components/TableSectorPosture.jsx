@@ -88,16 +88,27 @@ export default function TablePosture({ sector }) {
     );
   }
 
-  const chartData = postureColumns.map((column, index) => {
+  const yesNoQuestions = postureColumns.filter((column, index) => {
+    return !column.includes("Ao utilizar o computador durante o trabalho, você utiliza:");
+  }).map((column, index) => {
     const questionData = postureData[column] || {};
     return {
       name: shortenedColumns[index],
       Sim: questionData['Sim'] || 0,
-      Nao: questionData['Não'] || 0,
+      Nao: questionData['Não'] || 0
+    };
+  });
+
+  const variedQuestions = postureColumns.filter((column) => {
+    return column.includes("Ao utilizar o computador durante o trabalho, você utiliza:");
+  }).map((column, index) => {
+    const questionData = postureData[column] || {};
+    return {
+      name: shortenedColumns[index + 5],
       "Teclado integrado": questionData['Teclado integrado'] || 0,
       "Touchpad": questionData['Touchpad'] || 0,
       "Mouse": questionData['Mouse'] || 0,
-      "Teclado externo": questionData['Teclado externo'] || 0,
+      "Teclado externo": questionData['Teclado externo'] || 0
     };
   });
 
@@ -105,13 +116,34 @@ export default function TablePosture({ sector }) {
     <div className="w-full">
       <section className="px-2"></section>
       <section className="w-full">
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ mb: 4 }}>
           <Table stickyHeader aria-label="customized table">
             <TableHead>
               <TableRow>
                 <StyledTableCell>Pergunta</StyledTableCell>
                 <StyledTableCell align="right">Sim</StyledTableCell>
                 <StyledTableCell align="right">Não</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {yesNoQuestions.map((row, index) => (
+                <StyledTableRow key={index}>
+                  <StyledTableCell component="th" scope="row">
+                    {row.name}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">{row.Sim}</StyledTableCell>
+                  <StyledTableCell align="right">{row.Nao}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <TableContainer component={Paper}>
+          <Table stickyHeader aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>Pergunta</StyledTableCell>
                 <StyledTableCell align="right">Teclado integrado</StyledTableCell>
                 <StyledTableCell align="right">Touchpad</StyledTableCell>
                 <StyledTableCell align="right">Mouse</StyledTableCell>
@@ -119,13 +151,11 @@ export default function TablePosture({ sector }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {chartData.map((row, index) => (
+              {variedQuestions.map((row, index) => (
                 <StyledTableRow key={index}>
                   <StyledTableCell component="th" scope="row">
                     {row.name}
                   </StyledTableCell>
-                  <StyledTableCell align="right">{row.Sim}</StyledTableCell>
-                  <StyledTableCell align="right">{row.Nao}</StyledTableCell>
                   <StyledTableCell align="right">{row["Teclado integrado"]}</StyledTableCell>
                   <StyledTableCell align="right">{row.Touchpad}</StyledTableCell>
                   <StyledTableCell align="right">{row.Mouse}</StyledTableCell>

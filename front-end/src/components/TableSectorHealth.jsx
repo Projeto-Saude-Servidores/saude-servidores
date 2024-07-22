@@ -8,7 +8,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { CircularProgress } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const shortenedHealthColumns = [
   "Atividade física regular",
@@ -42,7 +42,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const healthColumns = [
   "9. Você pratica alguma atividade física regularmente (mínimo 3 vezes por semana)?",
-  "10. Você possuí algum problema de saúde? Liste abaixo:",
+  "10. Você possui algum problema de saúde? Liste abaixo:",
   "11. Tem alguma deficiência, se sim qual(ais)"
 ];
 
@@ -82,66 +82,95 @@ const HealthTable = ({ sector }) => {
     return <div>Dados não encontrados ou formato inválido.</div>;
   }
 
-  const chartData = healthColumns.map((column, index) => {
+  const yesNoQuestions = healthColumns.filter((column, index) => {
+    return [
+      "9. Você pratica alguma atividade física regularmente (mínimo 3 vezes por semana)?",
+    ].includes(column);
+  }).map((column, index) => {
     const questionData = healthData[column] || {};
     return {
       name: shortenedHealthColumns[index], // Usar versão resumida das perguntas
+      Sim: questionData['Sim'] || 0,
+      Não: questionData['Não'] || 0,
+    };
+  });
+
+  const variedQuestions = healthColumns.filter((column) => {
+    return [
+      "10. Você possui algum problema de saúde? Liste abaixo:",
+      "11. Tem alguma deficiência, se sim qual(ais)"
+    ].includes(column);
+  }).map((column, index) => {
+    const questionData = healthData[column] || {};
+    return {
+      name: shortenedHealthColumns[index + 1],
       Visual: questionData['Visual'] || 0,
       Nenhuma: questionData['Nenhuma'] || 0,
       Auditiva: questionData['Auditiva'] || 0,
-      Sim: questionData['Sim'] || 0,
-      Não: questionData['Não'] || 0,
       diabetes: questionData['diabetes'] || 0,
       asma: questionData['asma'] || 0,
       nenhum: questionData['nenhum'] || 0,
       hipertensão: questionData['hipertensão'] || 0,
-      Médio: questionData['Médio'] || 0,
     };
   });
 
   return (
     <div className="w-full">
-      <section className="px-2"></section>
-      <section className="w-full">
-        <TableContainer component={Paper}>
-          <Table stickyHeader aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Pergunta</StyledTableCell>
-                <StyledTableCell align="right">Visual</StyledTableCell>
-                <StyledTableCell align="right">Nenhuma</StyledTableCell>
-                <StyledTableCell align="right">Auditiva</StyledTableCell>
-                <StyledTableCell align="right">Sim</StyledTableCell>
-                <StyledTableCell align="right">Não</StyledTableCell>
-                <StyledTableCell align="right">Diabetes</StyledTableCell>
-                <StyledTableCell align="right">Asma</StyledTableCell>
-                <StyledTableCell align="right">Nenhum</StyledTableCell>
-                <StyledTableCell align="right">Hipertensão</StyledTableCell>
-                <StyledTableCell align="right">Médio</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {chartData.map((row, index) => (
-                <StyledTableRow key={index}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.name}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{row.Visual}</StyledTableCell>
-                  <StyledTableCell align="right">{row.Nenhuma}</StyledTableCell>
-                  <StyledTableCell align="right">{row.Auditiva}</StyledTableCell>
-                  <StyledTableCell align="right">{row.Sim}</StyledTableCell>
-                  <StyledTableCell align="right">{row.Não}</StyledTableCell>
-                  <StyledTableCell align="right">{row.diabetes}</StyledTableCell>
-                  <StyledTableCell align="right">{row.asma}</StyledTableCell>
-                  <StyledTableCell align="right">{row.nenhum}</StyledTableCell>
-                  <StyledTableCell align="right">{row.hipertensão}</StyledTableCell>
-                  <StyledTableCell align="right">{row.Médio}</StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </section>
+      <TableContainer component={Paper} sx={{ mb: 4 }}>
+        <Table stickyHeader aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Pergunta</StyledTableCell>
+              <StyledTableCell align="right">Sim</StyledTableCell>
+              <StyledTableCell align="right">Não</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {yesNoQuestions.map((row, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell component="th" scope="row">
+                  {row.name}
+                </StyledTableCell>
+                <StyledTableCell align="right">{row.Sim}</StyledTableCell>
+                <StyledTableCell align="right">{row.Não}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <TableContainer component={Paper}>
+        <Table stickyHeader aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Pergunta</StyledTableCell>
+              <StyledTableCell align="right">Visual</StyledTableCell>
+              <StyledTableCell align="right">Nenhuma</StyledTableCell>
+              <StyledTableCell align="right">Auditiva</StyledTableCell>
+              <StyledTableCell align="right">Diabetes</StyledTableCell>
+              <StyledTableCell align="right">Asma</StyledTableCell>
+              <StyledTableCell align="right">Nenhum</StyledTableCell>
+              <StyledTableCell align="right">Hipertensão</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {variedQuestions.map((row, index) => (
+              <StyledTableRow key={index}>
+                <StyledTableCell component="th" scope="row">
+                  {row.name}
+                </StyledTableCell>
+                <StyledTableCell align="right">{row.Visual}</StyledTableCell>
+                <StyledTableCell align="right">{row.Nenhuma}</StyledTableCell>
+                <StyledTableCell align="right">{row.Auditiva}</StyledTableCell>
+                <StyledTableCell align="right">{row.diabetes}</StyledTableCell>
+                <StyledTableCell align="right">{row.asma}</StyledTableCell>
+                <StyledTableCell align="right">{row.nenhum}</StyledTableCell>
+                <StyledTableCell align="right">{row.hipertensão}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
