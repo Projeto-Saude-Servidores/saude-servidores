@@ -345,11 +345,11 @@ export default function Home() {
                   sx={{ minWidth: 120 }}
                   size="small"
                 >
-                  <InputLabel>Gênero</InputLabel>
+                  <InputLabel>Setor</InputLabel>
                   <Select
-                    value={selectedGender}
-                    onChange={handleGenderChange}
-                    label="Gênero"
+                    value={selectedSector}
+                    onChange={handleSectorChange}
+                    label="Setor"
                     MenuProps={{
                       PaperProps: {
                         style: {
@@ -358,9 +358,11 @@ export default function Home() {
                       },
                     }}
                   >
-                    <MenuItem value="Masculino">Masculino</MenuItem>
-                    <MenuItem value="Feminino">Feminino</MenuItem>
-
+                    {Object.keys(responseDataSectors).map((sector) => (
+                      <MenuItem key={sector} value={sector}>
+                        {sector}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
