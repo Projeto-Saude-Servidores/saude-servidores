@@ -3,14 +3,16 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import Stack from "@mui/material/Stack";
 import PropTypes from "prop-types";
 
-function GraficoColunas({ data }) {
+function GraficoColunasSatisfacao({ data }) {
   const getColor = (value) => {
-    if (value < 1.5) {
-      return "#76B7B2";
-    } else if (value >= 1.5 && value < 2.5) {
+    if (value < 3) {
+        return "#E15759"
+      
+    } else if (value >= 3 && value < 5) {
       return "#EDC949";
     } else {
-      return "#E15759";
+        return "#76B7B2";
+
     }
   };
 
@@ -39,7 +41,7 @@ function GraficoColunas({ data }) {
       sx={{ marginRight: 4 }}
     >
       <Stack direction="row" spacing={0.5} alignItems="center">
-        <div style={{ width: 20, height: 20, backgroundColor: "#76B7B2" }} />
+        <div style={{ width: 20, height: 20, backgroundColor: "#E15759" }} />
         <span>Baixo</span>
       </Stack>
       <Stack direction="row" spacing={0.5} alignItems="center">
@@ -47,7 +49,7 @@ function GraficoColunas({ data }) {
         <span>Médio</span>
       </Stack>
       <Stack direction="row" spacing={0.5} alignItems="center">
-        <div style={{ width: 20, height: 20, backgroundColor: "#E15759" }} />
+        <div style={{ width: 20, height: 20, backgroundColor: "#76B7B2" }} />
         <span>Alto</span>
       </Stack>
     </Stack>
@@ -98,8 +100,8 @@ function GraficoColunas({ data }) {
   );
 }
 
-GraficoColunas.propTypes = {
+GraficoColunasSatisfacao.propTypes = {
   data: PropTypes.object.isRequired,
 };
 
-export default GraficoColunas;
+export default GraficoColunasSatisfacao;

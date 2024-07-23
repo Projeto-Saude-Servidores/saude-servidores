@@ -6,15 +6,15 @@ import { useState } from "react";
 export default function Banner({ onclick }) {
   const [isOpen, setOpen] = useState(false);
   return (
-    <div className="bg-white w-full bg-opacity-90 h-[50px] flex items-center justify-between px-4 shadow-md fixed top-0 left-0 z-50">
+    <div className="bg-white w-full h-[50px] flex items-center justify-between px-4 shadow-md ">
       <section className="flex flex-row items-center gap-2">
-        <button onClick={onclick}>
+        {/* <button onClick={onclick}>
           <Hamburger
             toggled={isOpen}
             color={isOpen ? "#d62728" : "#1f77b4"}
             toggle={setOpen}
           />
-        </button>
+        </button> */}
         <Image
           src={Logo}
           alt="Logo-UPE"

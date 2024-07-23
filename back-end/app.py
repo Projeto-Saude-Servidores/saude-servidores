@@ -68,6 +68,7 @@ pain_columns = [
     "29. Nos últimos 12 meses, você sentiu alguma dor ou desconforto ? Indique a intensidade da dor (0 = nenhuma 5 = dor extrema) [Tornozelo/pé esquerdo]"
 ]
 
+
 satisfaction_columns = [
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [Em muitos campos a minha vida está próxima do meu ideal.]",
     "30. Sobre a sua satisfação com a vida, utilize a escala de 1 a 7 pontos para indicar sua concordância com cada afirmação a seguir. [As minhas condições de vida são excelentes]",
@@ -89,6 +90,24 @@ def get_satisfaction_data_by_sector(sector):
         satisfaction_counts[column] = counts
 
     response_json = json.dumps(satisfaction_counts, ensure_ascii=False)
+    return Response(response_json, content_type="application/json; charset=utf-8")
+
+@app.route('/api/satisfacoes', methods=['GET'])
+def get_average_satisfaction_by_sector():
+    # Calcular o nível médio de dor para cada pessoa
+    df['Average Satisfaction Level'] = df[satisfaction_columns].mean(axis=1)
+    
+    # Calcular o nível médio de dor por setor e aplicar as abreviações definidas manualmente
+    sector_average_satisfaction = df.groupby('7. Setor da Reitoria:')['Average Satisfaction Level'].mean().reset_index()
+    sector_average_satisfaction['7. Setor da Reitoria:'] = sector_average_satisfaction['7. Setor da Reitoria:'].map(department_abbreviations)
+    
+    # Arredondar os valores para 2 casas decimais
+    sector_average_satisfaction_dict = sector_average_satisfaction.set_index('7. Setor da Reitoria:')['Average Satisfaction Level'].round(2).to_dict()
+    
+    # Usar json.dumps para garantir que os caracteres não sejam escapados
+    response_json = json.dumps(sector_average_satisfaction_dict, ensure_ascii=False)
+    
+    # Retornar a resposta JSON com o mime type application/json
     return Response(response_json, content_type="application/json; charset=utf-8")
 
 @app.route('/api/setores', methods=['GET'])

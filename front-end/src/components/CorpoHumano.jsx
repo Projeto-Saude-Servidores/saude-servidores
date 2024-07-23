@@ -240,6 +240,7 @@ const CorpoHumano = ({ sector }) => {
           x="81.851402"
           y="235.32277"
           id="text35"
+          className="font-bold text-xl"
         >
           <tspan x="81.851402" y="235.32277">
             OMBRO ESQUERDO
@@ -250,6 +251,7 @@ const CorpoHumano = ({ sector }) => {
           x="46.772228"
           y="404.8721"
           id="text36"
+          className="font-bold text-xl"
         >
           <tspan x="46.772228" y="404.8721">
             COTOVELO ESQUERDO
@@ -260,6 +262,7 @@ const CorpoHumano = ({ sector }) => {
           x="55.542023"
           y="527.64923"
           id="text37"
+          className="font-bold text-xl"
         >
           <tspan x="55.542023" y="527.64923">
             PUNHO ESQUERDO
@@ -270,6 +273,7 @@ const CorpoHumano = ({ sector }) => {
           x="476.49207"
           y="252.86235"
           id="text38"
+          className="font-bold text-xl"
         >
           <tspan x="476.49207" y="252.86235">
             OMBRO DIREITO
@@ -280,6 +284,7 @@ const CorpoHumano = ({ sector }) => {
           x="485.26187"
           y="404.8721"
           id="text39"
+          className="font-bold text-xl"
         >
           <tspan x="485.26187" y="404.8721">
             COTOVELO DIREITO
@@ -290,6 +295,7 @@ const CorpoHumano = ({ sector }) => {
           x="502.80145"
           y="529.11084"
           id="text40"
+          className="font-bold text-xl"
         >
           <tspan x="502.80145" y="529.11084">
             PUNHO DIREITO
@@ -300,6 +306,7 @@ const CorpoHumano = ({ sector }) => {
           x="384.40927"
           y="150.54811"
           id="text41"
+          className="font-bold text-xl"
         >
           <tspan x="384.40927" y="150.54811">
             PESCOÇO
@@ -310,6 +317,7 @@ const CorpoHumano = ({ sector }) => {
           x="445.79782"
           y="694.27527"
           id="text42"
+          className="font-bold text-xl"
         >
           <tspan x="445.79782" y="694.27527">
             QUADRIL/COXA
@@ -320,6 +328,7 @@ const CorpoHumano = ({ sector }) => {
           x="420.95007"
           y="800.97443"
           id="text43"
+          className="font-bold text-xl"
         >
           <tspan x="420.95007" y="800.97443">
             JOELHO DIREITO
@@ -330,6 +339,7 @@ const CorpoHumano = ({ sector }) => {
           x="122.7771"
           y="799.51282"
           id="text44"
+          className="font-bold text-xl"
         >
           <tspan x="122.7771" y="799.51282">
             JOELHO ESQUERDO
@@ -340,6 +350,7 @@ const CorpoHumano = ({ sector }) => {
           x="119.85384"
           y="992.44824"
           id="text45"
+          className="font-bold text-xl"
         >
           <tspan x="119.85384" y="992.44824">
             TORNOZELO ESQUERDO
@@ -350,6 +361,7 @@ const CorpoHumano = ({ sector }) => {
           x="401.94885"
           y="982.21686"
           id="text46"
+          className="font-bold text-xl"
         >
           <tspan x="401.94885" y="982.21686">
             TORNOZELO DIREITO
@@ -360,6 +372,7 @@ const CorpoHumano = ({ sector }) => {
           x="646.04138"
           y="334.71375"
           id="text47"
+          className="font-bold text-xl"
         >
           <tspan x="646.04138" y="334.71375">
             DORSAL
@@ -370,6 +383,7 @@ const CorpoHumano = ({ sector }) => {
           x="634.34833"
           y="463.33737"
           id="text48"
+          className="font-bold text-xl"
         >
           <tspan x="634.34833" y="463.33737">
             LOMBAR
@@ -382,35 +396,35 @@ const CorpoHumano = ({ sector }) => {
             className="w-4 h-4 mr-2"
             style={{ backgroundColor: "#c0c0c0" }}
           ></div>
-          <p className="whitespace-nowrap">0-20%</p>
+          <p className="whitespace-nowrap">Muito Baixo</p>
         </div>
         <div className="flex items-center">
           <div
             className="w-4 h-4 mr-2"
             style={{ backgroundColor: "#ffa500" }}
           ></div>
-          <p className="whitespace-nowrap">20-40%</p>
+          <p className="whitespace-nowrap">Baixo</p>
         </div>
         <div className="flex items-center">
           <div
             className="w-4 h-4 mr-2"
             style={{ backgroundColor: "#800080" }}
           ></div>
-          <p className="whitespace-nowrap">40-60%</p>
+          <p className="whitespace-nowrap">Médio</p>
         </div>
         <div className="flex items-center">
           <div
             className="w-4 h-4 mr-2"
             style={{ backgroundColor: "#000080" }}
           ></div>
-          <p className="whitespace-nowrap">60-80%</p>
+          <p className="whitespace-nowrap">Alto</p>
         </div>
         <div className="flex items-center">
           <div
             className="w-4 h-4 mr-2"
             style={{ backgroundColor: "#ff0000" }}
           ></div>
-          <p className="whitespace-nowrap">80-100%</p>
+          <p className="whitespace-nowrap">Muito Alto</p>
         </div>
       </div>
     </div>
