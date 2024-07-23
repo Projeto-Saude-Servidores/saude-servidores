@@ -245,7 +245,7 @@ export default function Home() {
         <div className="bg-white rounded-lg h-1/2 w-full shadow-md flex flex-col items-center">
           <div className="flex flex-col w-full h-1/5 justify-between">
 
-            {selectedSector && chartType !== "pain_old" && chartType !== "pain_gender" &&(
+            {selectedSector && chartType === "pain" &&(
                 <div className="flex flex-row items-center w-full justify-between px-4 text-left pl-4 pb-1 font-bold mt-2">
                 Nível de dor específica por setor
                 <FormControl
@@ -311,6 +311,34 @@ export default function Home() {
             {selectedSector && chartType === "pain_gender" && (
                 <div className="flex flex-row items-center w-full justify-between px-4 text-left pl-4 pb-1 font-bold mt-2">
                 Nível de dor específica por gênero
+                <FormControl
+                  variant="outlined"
+                  className="ml-4"
+                  sx={{ minWidth: 120 }}
+                  size="small"
+                >
+                  <InputLabel>Gênero</InputLabel>
+                  <Select
+                    value={selectedGender}
+                    onChange={handleGenderChange}
+                    label="Gênero"
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          textAlign: "center",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value="Masculino">Masculino</MenuItem>
+                    <MenuItem value="Feminino">Feminino</MenuItem>
+
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+            {selectedSector && chartType !== "pain_gender" && chartType !== "pain" && chartType !== "pain_old" && (
+                <div className="flex flex-row items-center w-full justify-end px-4 text-left pl-4 pb-1 font-bold mt-2">
                 <FormControl
                   variant="outlined"
                   className="ml-4"
