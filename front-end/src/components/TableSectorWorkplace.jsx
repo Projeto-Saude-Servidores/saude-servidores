@@ -88,34 +88,34 @@ const WorkplaceTable = ({ sector }) => {
     return <div>Dados não encontrados ou formato inválido.</div>;
   }
 
-  const yesNoQuestions = workplaceColumns.filter((column, index) => {
-    return [
-      "14. Você classifica o seu trabalho como monótono?",
-      "15. Você se sente estressado durante o seu trabalho?",
-      "16. O seu trabalho exige esforço mental?",
-      "17. Você possui conhecimento em relação a ergonomia?",
-      "20. A iluminação incomoda na realização do seu trabalho?",
-    ].includes(column);
-  }).map((column, index) => {
-    const questionData = workplaceData[column] || {};
+  const yesNoQuestions = [
+    "Trabalho considerado monótono",
+    "Sente estressado no trabalho",
+    "Trabalho exige esforço mental",
+    "Conhecimento sobre ergonomia",
+    "Iluminação atrapalha seu trabalho",
+  ].map((name) => {
+    const columnIndex = abreviatedColumns.indexOf(name);
+    const columnKey = workplaceColumns[columnIndex];
+    const questionData = workplaceData[columnKey] || {};
     return {
-      name: abreviatedColumns[index],
+      name,
       Sim: questionData["Sim"] || 0,
       Não: questionData["Não"] || 0,
     };
   });
 
-  const variedQuestions = workplaceColumns.filter((column) => {
-    return [
-      "12. Como é o seu relacionamento com colegas do setor?",
-      "13. Como é o seu relacionamento com a sua chefia?",
-      "18. Como você classifica o ruído no seu ambiente de trabalho?",
-      "19. Como você classifica a temperatura no seu ambiente de trabalho?",
-    ].includes(column);
-  }).map((column, index) => {
-    const questionData = workplaceData[column] || {};
+  const variedQuestions = [
+    "Relacionamento com colegas",
+    "Relacionamento com chefe",
+    "Ruído no ambiente de trabalho",
+    "Temperatura do ambiente de trabalho",
+  ].map((name) => {
+    const columnIndex = abreviatedColumns.indexOf(name);
+    const columnKey = workplaceColumns[columnIndex];
+    const questionData = workplaceData[columnKey] || {};
     return {
-      name: abreviatedColumns[index + 5],
+      name,
       Bom: questionData["Bom"] || 0,
       Ótimo: questionData["Ótimo"] || 0,
       Razoável: questionData["Razoável"] || 0,
